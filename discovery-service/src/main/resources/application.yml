@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: eureka-server
+
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: ${eureka.cluster.defaultZone:http://localhost:8761/eureka/}
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+    enable-self-preservation: false
+
+management:
+  info:
+    git:
+      enabled: true
+      mode: full
+  health:
+    defaults:
+      enabled: true
+  endpoints:
+    enabled-by-default: true
+    jmx:
+      domain: com.bnifp.mufis.discoveryservice
+      unique-names: true
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    beans:
+      cache:
+        time-to-live: 10s
+    health:
+      show-details: ALWAYS
+    prometheus:
+      enabled: true
+    jolokia:
+      enabled: true
+---
+# Set environment values specific to "dev" environment
+
+spring:
+  profiles: dev
+
+
+---
+# Set environment values specific to "sit" environment
+
+spring:
+  profiles: sit
+
+---
+# Set environment values specific to "uat" environment
+
+spring:
+  profiles: uat
+
+---
+# Set environment values specific to "production" environment
+
+spring:
+  profiles: production
