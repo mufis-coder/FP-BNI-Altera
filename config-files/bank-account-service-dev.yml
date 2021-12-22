@@ -1,0 +1,7 @@
+spring:
+	config:
+		activate:
+			on-profile: dev
+bank-account-service:
+	minBalance: 100
+	maxBalance: 300
