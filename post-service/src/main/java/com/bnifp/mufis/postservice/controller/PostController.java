@@ -22,6 +22,16 @@ public class PostController extends BaseController {
     @Qualifier("postServiceImpl")
     private PostService postService;
 
+    @GetMapping({"/{id}"})
+    public  ResponseEntity<BaseResponse<PostOutput>> getOne(@PathVariable Long id){
+        PostOutput output = postService.getOne(id);
+        if(Objects.isNull(output)){
+            String message = "Post with id: " + id.toString() + " is not Found";
+            return ResponseEntity.ok(new BaseResponse<>(Boolean.FALSE, message));
+        }
+        return ResponseEntity.ok(new BaseResponse<>(output));
+    }
+
     @GetMapping
     public ResponseEntity<BaseResponse<List<PostOutput>>> getAll(){
         return ResponseEntity.ok( new BaseResponse(postService.getAll()) );

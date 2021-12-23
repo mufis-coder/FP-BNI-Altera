@@ -29,7 +29,12 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public PostOutput getOne(Long id) {
-        return null;
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isEmpty()) {
+            return null;
+        }
+        Post temp = post.get();
+        return this.mapper.map(temp, PostOutput.class);
     }
 
     @Override
