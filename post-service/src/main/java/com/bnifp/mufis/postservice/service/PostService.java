@@ -12,5 +12,7 @@ public interface PostService {
 
     PostOutput addOne(PostInput input);
 
+    PostOutput updateOne(Long id, PostInput input);
+
     void deleteOne(Long id);
 }

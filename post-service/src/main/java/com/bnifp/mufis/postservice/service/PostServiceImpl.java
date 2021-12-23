@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService{
@@ -49,6 +50,18 @@ public class PostServiceImpl implements PostService{
         Post post = mapper.map(input, Post.class);
         postRepository.save(post);
         return this.mapper.map(post, PostOutput.class);
+    }
+
+    @Override
+    public PostOutput updateOne(Long id, PostInput input){
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isEmpty()) {
+            return null;
+        }
+        Post temp = post.get();
+        this.mapper.map(input, temp);
+        postRepository.save(temp);
+        return this.mapper.map(temp, PostOutput.class);
     }
 
     @Override
