@@ -1,6 +1,7 @@
 package com.bnifp.mufis.postservice.controller;
 
 import com.bnifp.mufis.postservice.dto.input.PostInput;
+import com.bnifp.mufis.postservice.dto.output.PostOutput;
 import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
@@ -19,8 +21,8 @@ public class PostController extends BaseController {
     private PostService postService;
 
     @GetMapping
-    public String getAll(){
-        return "HALOOO";
+    public ResponseEntity<List<PostOutput>> getAll(){
+        return ResponseEntity.ok(postService.getAll());
     }
 
     @PostMapping
