@@ -21,13 +21,20 @@ public class PostController extends BaseController {
     private PostService postService;
 
     @GetMapping
-    public ResponseEntity<List<PostOutput>> getAll(){
-        return ResponseEntity.ok(postService.getAll());
+    public ResponseEntity<BaseResponse<List<PostOutput>>> getAll(){
+        return ResponseEntity.ok( new BaseResponse(postService.getAll()) );
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<Boolean>> addOne(@Valid @RequestBody PostInput input){
-        postService.addOne(input);
-        return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE));
+    public ResponseEntity<BaseResponse<PostOutput>> addOne(@Valid @RequestBody PostInput input){
+        PostOutput output = postService.addOne(input);
+        return ResponseEntity.ok(new BaseResponse<>(output));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteOne(@PathVariable Long id){
+        postService.deleteOne(id);
+        String message = "Successfully Deleted post with id: " + id.toString();
+        return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE, message));
     }
 }

@@ -21,6 +21,11 @@ public class PostServiceImpl implements PostService{
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    public void setMapper(ModelMapper mapper){
+        this.mapper = mapper;
+    }
+
     @Override
     public PostOutput getOne(Long id) {
         return null;
@@ -40,14 +45,15 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void addOne(PostInput input) {
+    public PostOutput addOne(PostInput input) {
         Post post = mapper.map(input, Post.class);
         postRepository.save(post);
+        return this.mapper.map(post, PostOutput.class);
     }
 
     @Override
     public void deleteOne(Long id) {
-
+        postRepository.deleteById(id);
     }
 
 }

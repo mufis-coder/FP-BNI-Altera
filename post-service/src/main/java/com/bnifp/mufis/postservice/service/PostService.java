@@ -10,7 +10,7 @@ public interface PostService {
 
     List<PostOutput> getAll();
 
-    void addOne(PostInput input);
+    PostOutput addOne(PostInput input);
 
     void deleteOne(Long id);
 }
