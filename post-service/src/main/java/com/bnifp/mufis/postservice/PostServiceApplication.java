@@ -10,10 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableEurekaClient
-//@EntityScan(basePackages = {"com.bnifp.*"})
-//@ComponentScan(basePackages = {"com.bnifp.*"})
 @SpringBootApplication()
-//@EnableJpaRepositories(basePackages = "com.bnifp.*")
 public class PostServiceApplication {
 
 	public static void main(String[] args) {
