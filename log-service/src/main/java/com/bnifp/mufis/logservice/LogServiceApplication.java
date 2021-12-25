@@ -1,20 +1,17 @@
-package com.bnifp.mufis.postservice;
+package com.bnifp.mufis.logservice;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
-import org.modelmapper.ModelMapper;
-import org.springframework.web.client.RestTemplate;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableEurekaClient
 @SpringBootApplication()
-@EnableSwagger2
-public class PostServiceApplication {
+public class LogServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PostServiceApplication.class, args);
+		SpringApplication.run(LogServiceApplication.class, args);
 	}
 
 	@Bean
@@ -22,8 +19,4 @@ public class PostServiceApplication {
 		return new ModelMapper();
 	}
 
-	@Bean
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
 }

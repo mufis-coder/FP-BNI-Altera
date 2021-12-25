@@ -2,6 +2,7 @@ package com.bnifp.mufis.postservice.service;
 
 import com.bnifp.mufis.postservice.dto.input.PostInput;
 import com.bnifp.mufis.postservice.dto.output.PostOutput;
+import com.bnifp.mufis.postservice.model.Post;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface PostService {
 
     PostOutput updateOne(Long id, PostInput input);
 
-    void deleteOne(Long id);
+    Post deleteOne(Long id);
 }
