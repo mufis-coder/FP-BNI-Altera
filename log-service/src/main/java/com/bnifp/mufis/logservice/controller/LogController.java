@@ -1,5 +1,6 @@
 package com.bnifp.mufis.logservice.controller;
 
+import com.bnifp.mufis.logservice.dto.input.LogInput;
 import com.bnifp.mufis.logservice.model.Log;
 import com.bnifp.mufis.logservice.service.LogService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ public class LogController {
     private final LogService logService;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Log log){
-        Log logCreated = logService.create(log);
+    public ResponseEntity<?> create(@RequestBody LogInput input){
+        Log logCreated = logService.create(input);
         return ResponseEntity.ok(logCreated);
     }
 }
