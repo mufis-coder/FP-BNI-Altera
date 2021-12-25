@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/logs")
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class LogController {
     private final LogService logService;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody LogInput input){
+    public ResponseEntity<?> create(@Valid @RequestBody LogInput input){
         Log logCreated = logService.create(input);
         return ResponseEntity.ok(logCreated);
     }
