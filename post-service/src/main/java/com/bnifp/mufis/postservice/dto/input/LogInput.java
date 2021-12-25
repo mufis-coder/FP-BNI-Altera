@@ -1,4 +1,4 @@
-package com.bnifp.mufis.logservice.dto.input;
+package com.bnifp.mufis.postservice.dto.input;
 
 import lombok.*;
 

@@ -27,13 +27,18 @@ public class PostServiceImpl implements PostService{
         this.mapper = mapper;
     }
 
-    @Override
-    public PostOutput getOne(Long id) {
+    //function to find a Post with id
+    private Post findPost(Long id){
         Optional<Post> post = postRepository.findById(id);
         if (post.isEmpty()) {
             return null;
         }
-        Post temp = post.get();
+        return post.get();
+    }
+
+    @Override
+    public PostOutput getOne(Long id) {
+        Post temp = findPost(id);
         return this.mapper.map(temp, PostOutput.class);
     }
 
@@ -59,19 +64,17 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public PostOutput updateOne(Long id, PostInput input){
-        Optional<Post> post = postRepository.findById(id);
-        if (post.isEmpty()) {
-            return null;
-        }
-        Post temp = post.get();
+        Post temp = findPost(id);
         this.mapper.map(input, temp);
         postRepository.save(temp);
         return this.mapper.map(temp, PostOutput.class);
     }
 
     @Override
-    public void deleteOne(Long id) {
+    public Post deleteOne(Long id) {
+        Post temp = findPost(id);
         postRepository.deleteById(id);
+        return temp;
     }
 
 }

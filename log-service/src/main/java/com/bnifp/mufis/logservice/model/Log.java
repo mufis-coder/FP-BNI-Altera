@@ -22,7 +22,7 @@ public class Log {
 
     private String name;
 
-    private String data;
+    private Object data;
 
     protected Date created_at;
 
