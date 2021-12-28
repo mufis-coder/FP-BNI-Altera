@@ -15,7 +15,11 @@
 
     a. run postgresql-ubuntu, tutorial lebih lengkap di: https://github.com/mufis-coder/tips-tricks-code/tree/main/Posgresql/Postgresql-Ubuntu
 
+- Buka MongoDBCompass
+
+    a. Karena mongodb menggunakan remote server, maka tidak perlu menggunakan wsl-ubuntu (untuk runnya)
+
 - Buka IntelliJ-IDEA untuk setiap service yang ada dan run menggunakan IntelliJ-IDEA tersebut.
 
-    - post-service
-    - log-service
+    a. post-service
+    b. log-service
