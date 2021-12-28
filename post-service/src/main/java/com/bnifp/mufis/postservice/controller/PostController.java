@@ -5,6 +5,7 @@ import com.bnifp.mufis.postservice.dto.input.PostInput;
 import com.bnifp.mufis.postservice.dto.output.PostOutput;
 import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.Post;
+import com.bnifp.mufis.postservice.service.KafkaProducer;
 import com.bnifp.mufis.postservice.service.PostService;
 import com.google.gson.Gson;
 import org.json.JSONException;
@@ -30,6 +31,9 @@ public class PostController extends BaseController {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    private KafkaProducer producer;
+
     //function for write log to log-service
     private void writeLog(Post input){
         String url = "http://localhost:8085/logs";
@@ -53,6 +57,10 @@ public class PostController extends BaseController {
         }
         return ResponseEntity.ok(new BaseResponse<>(output));
     }
+
+    //Kafka
+    @PostMapping("/test")
+    public void send(@RequestBody String data) {producer.produce(data);}
 
     @GetMapping
     public ResponseEntity<BaseResponse<List<PostOutput>>> getAll(){
