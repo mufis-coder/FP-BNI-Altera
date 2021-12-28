@@ -3,7 +3,9 @@
 - Dalam satu IntelliJ-IDEA, pada path discovery-service:
 
     a. run spring aplikasi discovery-service
+    
     b. run kafka: https://github.com/mufis-coder/tips-tricks-code/tree/main/Kafka
+
         - run zookeeper
         - run server-kafka
         - run create-topic
