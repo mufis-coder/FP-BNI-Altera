@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: api-gateway
+  jackson:
+    default-property-inclusion: NON_NULL
+  sleuth:
+    sampler:
+      probability: 1.0
+  cloud:
+    gateway:
+      routes:
+        - id: auth
+          uri: lb://auth-service
+          predicates:
+            - Path=/users/**
+#          filters:
+#            - JwtAuthenticationFilter=RSA256,HS256
+#            - RemoveResponseHeader=X-Powered-By
+        - id: post
+          uri: lb://post-service
+          predicates:
+            - Path=/post/**
+#          filters:
+#            - JwtAuthenticationFilter=RSA256,HS256
+#            - RemoveResponseHeader=X-Powered-By
+      discovery:
+        locator:
+          enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+server:
+  port: 9000
+
+eureka:
+  client:
+    serviceURL:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:${random.uuid}
+
+#secret key - should be encrypted
+#jwt:
+#  secret: secretkey
+#  expiration-time: 600000
+  #ignore null fields in json
