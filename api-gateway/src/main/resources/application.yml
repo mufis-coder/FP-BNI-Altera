@@ -8,47 +8,47 @@ spring:
       probability: 1.0
   cloud:
     gateway:
-      routes:
-        - id: auth
-          uri: lb://auth-service
-          predicates:
-            - Path=/users/**
+#      routes:
+#        - id: auth
+#          uri: lb://auth-service
+#          predicates:
+#            - Path=/users/**
 #          filters:
 #            - JwtAuthenticationFilter=RSA256,HS256
 #            - RemoveResponseHeader=X-Powered-By
-        - id: auth
-          uri: lb://auth-service
-          predicates:
-            - Path=/auth/**
+#        - id: auth
+#          uri: lb://auth-service
+#          predicates:
+#            - Path=/auth/**
 
-        - id: post
-          uri: lb://post-service
-          predicates:
-            - Path=/posts/**
-#          filters:
-#            - JwtAuthenticationFilter=RSA256,HS256
-#            - RemoveResponseHeader=X-Powered-By
-
-        - id: log
-          uri: lb://log-service
-          predicates:
-            - Path=/logs/**
+#        - id: post
+#          uri: lb://post-service
+#          predicates:
+#            - Path=/posts/**
 #          filters:
 #            - JwtAuthenticationFilter=RSA256,HS256
 #            - RemoveResponseHeader=X-Powered-By
 
-        - id: post-swagger
-          uri: lb://post-service
-          predicates:
-            - Path=/post-swagger/**
-        - id: auth-swagger
-          uri: lb://auth-service
-          predicates:
-            - Path=/auth-swagger/**
-        - id: log-swagger
-          uri: lb://log-service
-          predicates:
-            - Path=/log-swagger/**
+#        - id: log
+#          uri: lb://log-service
+#          predicates:
+#            - Path=/logs/**
+#          filters:
+#            - JwtAuthenticationFilter=RSA256,HS256
+#            - RemoveResponseHeader=X-Powered-By
+
+#        - id: post-swagger
+#          uri: lb://post-service
+#          predicates:
+#            - Path=/post-swagger/**
+#        - id: auth-swagger
+#          uri: lb://auth-service
+#          predicates:
+#            - Path=/auth-swagger/**
+#        - id: log-swagger
+#          uri: lb://log-service
+#          predicates:
+#            - Path=/log-swagger/**
       discovery:
         locator:
           enabled: true
@@ -70,7 +70,7 @@ eureka:
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:${random.uuid}
 
 #secret key - should be encrypted
-#jwt:
-#  secret: secretkey
-#  expiration-time: 600000
+jwt:
+  secret: secretkey
+  expiration-time: 600000
   #ignore null fields in json
