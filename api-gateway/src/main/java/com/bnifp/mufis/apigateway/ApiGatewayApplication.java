@@ -3,9 +3,13 @@ package com.bnifp.mufis.apigateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Configuration;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@Configuration
+@EnableSwagger2
 public class ApiGatewayApplication {
 
 	public static void main(String[] args) {

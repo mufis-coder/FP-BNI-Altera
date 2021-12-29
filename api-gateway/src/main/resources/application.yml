@@ -23,6 +23,10 @@ spring:
 #          filters:
 #            - JwtAuthenticationFilter=RSA256,HS256
 #            - RemoveResponseHeader=X-Powered-By
+        - id: posts-swagger
+          uri: lb://post-service
+          predicates:
+            - Path=/posts-swagger/**
       discovery:
         locator:
           enabled: true
