@@ -46,19 +46,27 @@ public class JwtAuthenticationFilter implements GatewayFilter {
 
 //            final String token = request.getHeaders().getOrEmpty("Authorization").get(0);
             final String token = getJWTFromRequest(request);
-
-            try {
-                jwtTokenProvider.validateToken(token);
-                //TODO Validate role
-
-            } catch (JwtTokenMalformedException | JwtTokenMissingException e) {
-                // e.printStackTrace();
-
+            System.out.println(!jwtTokenProvider.validateToken(token));
+            if(!jwtTokenProvider.validateToken(token)){
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.BAD_REQUEST);
-
                 return response.setComplete();
             }
+//            try {
+//                System.out.println("Token: " + token);
+//                jwtTokenProvider.validateToken(token);
+//                System.out.println("Token: " + token);
+//                //TODO Validate role
+//
+//            }
+//            catch (JwtTokenMalformedException | JwtTokenMissingException e) {
+//                // e.printStackTrace();
+//
+//                ServerHttpResponse response = exchange.getResponse();
+//                response.setStatusCode(HttpStatus.BAD_REQUEST);
+//
+//                return response.setComplete();
+//            }
 
             Claims claims = jwtTokenProvider.getClaims(token);
             exchange.getRequest().mutate().header("username", String.valueOf(claims.get("username"))).build();

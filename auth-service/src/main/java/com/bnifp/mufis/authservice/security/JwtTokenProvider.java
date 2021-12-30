@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,10 +21,17 @@ import java.util.Map;
 @Component
 public class JwtTokenProvider {
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+//    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    String keyString = "secretasdsaodasdasjdasdb2312asndkamlasdnjasj";
+//    private final Key key = new SecretKeySpec(keyString.getBytes(),0,keyString.getBytes().length, "HS256");
+
+    byte[] keyData = keyString.getBytes(Charset.forName("UTF-8"));
+    private final Key key = new SecretKeySpec(keyData, SignatureAlgorithm.HS256.getJcaName());
+
 
     @Value("${jwt.expiration-time}")
     private Long expiration;
+
 
     public String generateToken(Authentication authentication) {
         final User user = (User) authentication.getPrincipal();

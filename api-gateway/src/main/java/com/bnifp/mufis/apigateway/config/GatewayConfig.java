@@ -19,7 +19,12 @@ public class GatewayConfig {
         return builder.routes()
                 .route("post", r -> r.path("/posts/**").filters(f -> f.filter(filter)).uri("lb://post" +
                         "-service"))
-                .route("post-swagger", r->r.path("/post-swagger/**").uri("lb://post-service")).build();
+                .route("user", r->r.path("/users/**").filters(f -> f.filter(filter)).uri("lb://auth-service"))
+                .route("auth", r->r.path("/auth/**").uri("lb://auth-service"))
+                .route("post-swagger", r->r.path("/post-swagger/**").uri("lb://post-service"))
+                .route("auth-swagger", r->r.path("/auth-swagger/**").uri("lb://auth-service"))
+                .route("log-swagger", r->r.path("/log-swagger/**").uri("lb://log-service"))
+                .build();
 //                .route("auth", r -> r.path("/auth/**").filters(f -> f.filter(filter)).uri("lb://auth"))
 //                .route("order-service", r -> r.path("/order/**").filters(f -> f.filter(filter)).uri("lb://order" +
 //                        "-service")).build();
