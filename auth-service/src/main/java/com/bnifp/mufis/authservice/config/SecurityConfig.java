@@ -47,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
+                .antMatchers("/auth-swagger/**").permitAll()
                 .anyRequest().authenticated();
         // remove session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/posts")
 public class PostController extends BaseController {
 
     @Autowired
