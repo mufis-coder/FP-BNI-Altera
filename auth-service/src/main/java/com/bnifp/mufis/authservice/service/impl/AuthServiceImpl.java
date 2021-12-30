@@ -1,5 +1,8 @@
 package com.bnifp.mufis.authservice.service.impl;
 
+import com.bnifp.mufis.authservice.dto.input.UserInput;
+import com.bnifp.mufis.authservice.dto.output.UserOutput;
+import com.bnifp.mufis.authservice.dto.response.BaseResponse;
 import com.bnifp.mufis.authservice.model.User;
 import com.bnifp.mufis.authservice.payload.TokenResponse;
 import com.bnifp.mufis.authservice.payload.UsernamePassword;
@@ -8,6 +11,8 @@ import com.bnifp.mufis.authservice.security.JwtTokenProvider;
 import com.bnifp.mufis.authservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +20,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.modelmapper.ModelMapper;
+
+import java.util.Objects;
 
 @Log4j2
 @Service
@@ -26,12 +34,27 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ModelMapper mapper;
+
+    @Autowired
+    public void setMapper(ModelMapper mapper){
+        this.mapper = mapper;
+    }
+
     @Override
-    public User register(UsernamePassword req) {
-        User user = new User();
-        user.setUsername(req.getUsername());
-        user.setPassword(passwordEncoder.encode(req.getPassword()));
-        return userRepository.save(user);
+    public ResponseEntity<BaseResponse<UserOutput>> addOne(UserInput userInput) {
+        User user = this.mapper.map(userInput, User.class);
+        user.setPassword(passwordEncoder.encode(userInput.getPassword()));
+        try{
+            userRepository.save(user);
+        } catch(Exception e){
+//            String message = "Error! Email or Username has been registered!";
+            String message = e.getMessage();
+            return ResponseEntity.ok(new BaseResponse<>(Boolean.FALSE, message));
+        }
+//        return this.mapper.map(userInput, UserOutput.class);
+        return ResponseEntity.ok(new BaseResponse<>(this.mapper.map(userInput, UserOutput.class)));
     }
 
     @Override
