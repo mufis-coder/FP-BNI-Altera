@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter implements GatewayFilter {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    //
+    //response for jwt that doesn't pass authentication and authorization filter
     private Mono<Void> notAuthenticatedAuthorized(ServerWebExchange exchange,
                                                   String msg, HttpStatus statusCode){
         ServerHttpResponse response = exchange.getResponse();
