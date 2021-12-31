@@ -1,9 +1,9 @@
-package com.bnifp.mufis.authservice.payload;
+package com.bnifp.mufis.authservice.dto.input;
 
 import lombok.Data;
 
 @Data
-public class UsernamePassword {
+public class UserInputLogin {
     private String username;
     private String password;
 }

@@ -1,8 +1,8 @@
 package com.bnifp.mufis.authservice.controller;
 
 import com.bnifp.mufis.authservice.dto.input.UserInput;
+import com.bnifp.mufis.authservice.dto.input.UserInputLogin;
 import com.bnifp.mufis.authservice.dto.response.BaseResponse;
-import com.bnifp.mufis.authservice.payload.UsernamePassword;
 import com.bnifp.mufis.authservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> generateToken(@RequestBody UsernamePassword req) {
-        return ResponseEntity.ok(authService.generateToken(req));
+    public ResponseEntity<?> generateToken(@RequestBody UserInputLogin userInputLogin) {
+        return ResponseEntity.ok(authService.generateToken(userInputLogin));
     }
 }

@@ -1,11 +1,11 @@
 package com.bnifp.mufis.authservice.service.impl;
 
 import com.bnifp.mufis.authservice.dto.input.UserInput;
+import com.bnifp.mufis.authservice.dto.input.UserInputLogin;
 import com.bnifp.mufis.authservice.dto.output.UserOutput;
 import com.bnifp.mufis.authservice.dto.response.BaseResponse;
 import com.bnifp.mufis.authservice.model.User;
 import com.bnifp.mufis.authservice.payload.TokenResponse;
-import com.bnifp.mufis.authservice.payload.UsernamePassword;
 import com.bnifp.mufis.authservice.repository.UserRepository;
 import com.bnifp.mufis.authservice.security.JwtTokenProvider;
 import com.bnifp.mufis.authservice.service.AuthService;
@@ -57,12 +57,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public TokenResponse generateToken(UsernamePassword req) {
+    public TokenResponse generateToken(UserInputLogin userInputLogin) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            req.getUsername(),
-                            req.getPassword()
+                            userInputLogin.getUsername(),
+                            userInputLogin.getPassword()
                     )
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
