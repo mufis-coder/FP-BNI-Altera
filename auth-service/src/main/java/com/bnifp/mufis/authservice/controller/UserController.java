@@ -18,8 +18,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<?> listUsers() {
-        return ResponseEntity.ok("this is list users");
+    public ResponseEntity<BaseResponse> getAll() {
+        return userService.getAll();
     }
 
     @GetMapping("/me")
