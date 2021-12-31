@@ -31,6 +31,21 @@ public class JwtAuthenticationFilter implements GatewayFilter {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    //
+    private Mono<Void> notAuthenticatedAuthorized(ServerWebExchange exchange,
+                                                  String msg, HttpStatus statusCode){
+        ServerHttpResponse response = exchange.getResponse();
+
+        String message = msg;
+        BaseResponse responseMsg = new BaseResponse<>(Boolean.FALSE, message);
+
+        response.setStatusCode(statusCode);
+        //change object to json -> send it through response
+        byte[] bytes = new Gson().toJson(responseMsg).getBytes(StandardCharsets.UTF_8);
+        DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+        return response.writeWith(Flux.just(buffer));
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -52,24 +67,23 @@ public class JwtAuthenticationFilter implements GatewayFilter {
             final String token = getJWTFromRequest(request);
 
             if(!jwtTokenProvider.validateToken(token)){
-                ServerHttpResponse response = exchange.getResponse();
-
-                String message = "JWT Invalid!";
-                BaseResponse responseMsg = new BaseResponse<>(Boolean.FALSE, message);
-
-                response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                //change object to json -> send it through response
-                byte[] bytes = new Gson().toJson(responseMsg).getBytes(StandardCharsets.UTF_8);
-                DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
-                return response.writeWith(Flux.just(buffer));
-
-//                return response.setComplete();
+                String msg = "JWT Invalid!";
+                return notAuthenticatedAuthorized(exchange, msg, HttpStatus.UNAUTHORIZED);
             }
 
-            //TODO Forbidden check for otorisasi
-            System.out.println(request.getPath());
-
+            //Forbidden check for authorization
             Claims claims = jwtTokenProvider.getClaims(token);
+            String role = claims.get("role").toString();
+            String route = request.getPath().toString();
+            String method = request.getMethod().toString();
+
+            if(route.equals("/users") && method.equals("GET")) {
+                if(!role.equals("ADMIN")){
+                    String msg = role + " is not authorized to access this resource!";
+                    return notAuthenticatedAuthorized(exchange, msg, HttpStatus.FORBIDDEN);
+                }
+            }
+
             exchange.getRequest().mutate().header("username", String.valueOf(claims.get("username"))).build();
         }
 
