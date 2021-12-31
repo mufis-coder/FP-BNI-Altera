@@ -12,6 +12,7 @@ import com.bnifp.mufis.authservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 
-import java.util.Objects;
 
 @Log4j2
 @Service
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<UserOutput>> addOne(UserInput userInput) {
+    public ResponseEntity<BaseResponse> addOne(UserInput userInput) {
         User user = this.mapper.map(userInput, User.class);
         user.setPassword(passwordEncoder.encode(userInput.getPassword()));
         try{
@@ -51,9 +51,8 @@ public class AuthServiceImpl implements AuthService {
         } catch(Exception e){
 //            String message = "Error! Email or Username has been registered!";
             String message = e.getMessage();
-            return ResponseEntity.ok(new BaseResponse<>(Boolean.FALSE, message));
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message), HttpStatus.CONFLICT);
         }
-//        return this.mapper.map(userInput, UserOutput.class);
         return ResponseEntity.ok(new BaseResponse<>(this.mapper.map(userInput, UserOutput.class)));
     }
 

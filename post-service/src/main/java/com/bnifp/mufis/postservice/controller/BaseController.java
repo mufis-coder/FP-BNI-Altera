@@ -45,4 +45,13 @@ public class BaseController {
         response.setSuccess(false);
         return response;
     }
+
+    @ResponseStatus(code = HttpStatus.CONFLICT)
+    @ResponseBody
+    public BaseResponse<?> httpStatus409(Boolean status, String message) {
+        BaseResponse<?> response = new BaseResponse<>(null);
+        response.setMessage(message);
+        response.setSuccess(false);
+        return response;
+    }
 }
