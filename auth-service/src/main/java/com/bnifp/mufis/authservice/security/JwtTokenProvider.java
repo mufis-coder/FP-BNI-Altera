@@ -3,14 +3,12 @@ package com.bnifp.mufis.authservice.security;
 import com.bnifp.mufis.authservice.model.User;
 import io.jsonwebtoken.*;
 import lombok.extern.log4j.Log4j2;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.security.Key;
 import java.util.Date;
@@ -21,10 +19,7 @@ import java.util.Map;
 @Component
 public class JwtTokenProvider {
 
-//    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     String keyString = "secretasdsaodasdasjdasdb2312asndkamlasdnjasj";
-//    private final Key key = new SecretKeySpec(keyString.getBytes(),0,keyString.getBytes().length, "HS256");
-
     byte[] keyData = keyString.getBytes(Charset.forName("UTF-8"));
     private final Key key = new SecretKeySpec(keyData, SignatureAlgorithm.HS256.getJcaName());
 
@@ -41,6 +36,8 @@ public class JwtTokenProvider {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
+        claims.put("role", user.getRole());
+        claims.put("id", user.getId());
 
         return Jwts.builder()
                 .setId(user.getId().toString()) // with claim, this will be replaced
@@ -73,5 +70,10 @@ public class JwtTokenProvider {
     public String getUsername(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         return claims.get("username").toString();
+    }
+
+    public String getRole(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return claims.get("role").toString();
     }
 }

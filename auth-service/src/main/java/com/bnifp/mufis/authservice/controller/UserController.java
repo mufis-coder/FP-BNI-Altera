@@ -26,8 +26,5 @@ public class UserController {
     public ResponseEntity<BaseResponse> getOne(Principal principal) {
         String username = principal.getName();
         return userService.getOne(username);
-
-//        return ResponseEntity.ok("this is user info " + principal.getName());
-
     }
 }

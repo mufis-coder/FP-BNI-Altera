@@ -25,9 +25,6 @@ public class GatewayConfig {
                 .route("auth-swagger", r->r.path("/auth-swagger/**").uri("lb://auth-service"))
                 .route("log-swagger", r->r.path("/log-swagger/**").uri("lb://log-service"))
                 .build();
-//                .route("auth", r -> r.path("/auth/**").filters(f -> f.filter(filter)).uri("lb://auth"))
-//                .route("order-service", r -> r.path("/order/**").filters(f -> f.filter(filter)).uri("lb://order" +
-//                        "-service")).build();
     }
 
 }

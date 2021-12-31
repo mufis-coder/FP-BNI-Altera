@@ -47,6 +47,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             log.error(e.getMessage(), e);
         }
 
+
         filterChain.doFilter(request, response);
     }
 
