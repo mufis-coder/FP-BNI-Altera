@@ -1,20 +1,24 @@
 package com.bnifp.mufis.apigateway.security;
 
+import com.bnifp.mufis.apigateway.dto.response.BaseResponse;
 import com.bnifp.mufis.apigateway.exception.JwtTokenMalformedException;
 import com.bnifp.mufis.apigateway.exception.JwtTokenMissingException;
+import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -44,29 +48,26 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 return response.setComplete();
             }
 
-//            final String token = request.getHeaders().getOrEmpty("Authorization").get(0);
+            //get token from Header
             final String token = getJWTFromRequest(request);
-            System.out.println(!jwtTokenProvider.validateToken(token));
+
             if(!jwtTokenProvider.validateToken(token)){
                 ServerHttpResponse response = exchange.getResponse();
-                response.setStatusCode(HttpStatus.BAD_REQUEST);
-                return response.setComplete();
-            }
-//            try {
-//                System.out.println("Token: " + token);
-//                jwtTokenProvider.validateToken(token);
-//                System.out.println("Token: " + token);
-//                //TODO Validate role
-//
-//            }
-//            catch (JwtTokenMalformedException | JwtTokenMissingException e) {
-//                // e.printStackTrace();
-//
-//                ServerHttpResponse response = exchange.getResponse();
-//                response.setStatusCode(HttpStatus.BAD_REQUEST);
-//
+
+                String message = "JWT Invalid!";
+                BaseResponse responseMsg = new BaseResponse<>(Boolean.FALSE, message);
+
+                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                //change object to json -> send it through response
+                byte[] bytes = new Gson().toJson(responseMsg).getBytes(StandardCharsets.UTF_8);
+                DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+                return response.writeWith(Flux.just(buffer));
+
 //                return response.setComplete();
-//            }
+            }
+
+            //TODO Forbidden check for otorisasi
+            System.out.println(request.getPath());
 
             Claims claims = jwtTokenProvider.getClaims(token);
             exchange.getRequest().mutate().header("username", String.valueOf(claims.get("username"))).build();
