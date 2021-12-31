@@ -42,10 +42,25 @@ public class AuthServiceImpl implements AuthService {
         this.mapper = mapper;
     }
 
+    //Check if string is null or empty
+    private Boolean isNullorEmpty(String str){
+        if (str == null || str.isEmpty() || str.trim().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public ResponseEntity<BaseResponse> addOne(UserInput userInput) {
+        if(isNullorEmpty(userInput.getFullname())|| isNullorEmpty(userInput.getUsername())
+                || isNullorEmpty(userInput.getEmail()) || isNullorEmpty(userInput.getPassword())){
+            String message = "Full name, username, email, and password cannot be null or empty!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message), HttpStatus.BAD_REQUEST);
+        }
+
         User user = this.mapper.map(userInput, User.class);
         user.setPassword(passwordEncoder.encode(userInput.getPassword()));
+
         try{
             userRepository.save(user);
         } catch(Exception e){
@@ -53,6 +68,7 @@ public class AuthServiceImpl implements AuthService {
             String message = e.getMessage();
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message), HttpStatus.CONFLICT);
         }
+
         return ResponseEntity.ok(new BaseResponse<>(this.mapper.map(userInput, UserOutput.class)));
     }
 
