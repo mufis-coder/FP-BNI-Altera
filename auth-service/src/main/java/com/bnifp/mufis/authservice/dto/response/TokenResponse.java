@@ -1,4 +1,4 @@
-package com.bnifp.mufis.authservice.payload;
+package com.bnifp.mufis.authservice.dto.response;
 
 import lombok.Data;
 

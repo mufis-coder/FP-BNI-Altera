@@ -25,7 +25,7 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> generateToken(@RequestBody UserInputLogin userInputLogin) {
-        return ResponseEntity.ok(authService.generateToken(userInputLogin));
+    public ResponseEntity<BaseResponse> generateToken(@RequestBody UserInputLogin userInputLogin) {
+        return authService.generateToken(userInputLogin);
     }
 }

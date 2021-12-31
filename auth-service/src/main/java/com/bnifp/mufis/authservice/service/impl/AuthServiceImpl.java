@@ -5,7 +5,7 @@ import com.bnifp.mufis.authservice.dto.input.UserInputLogin;
 import com.bnifp.mufis.authservice.dto.output.UserOutput;
 import com.bnifp.mufis.authservice.dto.response.BaseResponse;
 import com.bnifp.mufis.authservice.model.User;
-import com.bnifp.mufis.authservice.payload.TokenResponse;
+import com.bnifp.mufis.authservice.dto.response.TokenResponse;
 import com.bnifp.mufis.authservice.repository.UserRepository;
 import com.bnifp.mufis.authservice.security.JwtTokenProvider;
 import com.bnifp.mufis.authservice.service.AuthService;
@@ -73,7 +73,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public TokenResponse generateToken(UserInputLogin userInputLogin) {
+    public ResponseEntity<BaseResponse> generateToken(UserInputLogin userInputLogin) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -85,7 +85,9 @@ public class AuthServiceImpl implements AuthService {
             String jwt = jwtTokenProvider.generateToken(authentication);
             TokenResponse tokenResponse = new TokenResponse();
             tokenResponse.setToken(jwt);
-            return tokenResponse;
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(tokenResponse),
+                    HttpStatus.OK);
+
         } catch (BadCredentialsException e) {
             log.error("Bad Credential", e);
             throw new RuntimeException(e.getMessage(), e);
