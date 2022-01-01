@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public ResponseEntity<BaseResponse> getOne(String username){
+        //Error if user not found has been handled by loadUserByUsername
         User user = userRepository.getDistinctTopByUsername(username);
         UserOutputDetail userDetail = this.mapper.map(user, UserOutputDetail.class);
         return ResponseEntity.ok(new BaseResponse<>(userDetail));
@@ -50,6 +51,14 @@ public class UserServiceImpl implements UserService {
             outputs.add(mapper.map(post, UserOutput.class));
         }
         return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
+    }
+
+    public ResponseEntity<BaseResponse> deleteOne(String username){
+        //Error if user not found has been handled by loadUserByUsername
+        User user = userRepository.getDistinctTopByUsername(username);
+        userRepository.deleteById(user.getId());
+        String message = "Successfully Deleted post with id: " + user.getId().toString();
+        return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE, message));
     }
 
     @Override

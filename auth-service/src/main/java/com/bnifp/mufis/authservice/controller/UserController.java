@@ -4,6 +4,7 @@ import com.bnifp.mufis.authservice.dto.response.BaseResponse;
 import com.bnifp.mufis.authservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +27,12 @@ public class UserController {
     public ResponseEntity<BaseResponse> getOne(Principal principal) {
         String username = principal.getName();
         return userService.getOne(username);
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<BaseResponse> deleteOne(Principal principal){
+        String username = principal.getName();
+        return userService.deleteOne(username);
+//        writeLog(post); //write log to log-service
     }
 }
