@@ -10,6 +10,7 @@ import com.bnifp.mufis.authservice.service.UserService;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.apache.commons.collections4.IterableUtils;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Service
@@ -64,8 +68,8 @@ public class UserServiceImpl implements UserService {
 
         try{
             String psn = new JSONObject()
-                    .put("name", "post-service")
-                    .put("data", new Gson().toJson(user))
+                    .put("name", "auth-service")
+                    .put("data", user)
                     .toString();
             kafkaProducer.produce(psn);
         }catch (Exception e){
