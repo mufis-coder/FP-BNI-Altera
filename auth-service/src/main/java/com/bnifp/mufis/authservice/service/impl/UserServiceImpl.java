@@ -5,7 +5,9 @@ import com.bnifp.mufis.authservice.dto.output.UserOutputDetail;
 import com.bnifp.mufis.authservice.dto.response.BaseResponse;
 import com.bnifp.mufis.authservice.model.User;
 import com.bnifp.mufis.authservice.repository.UserRepository;
+import com.bnifp.mufis.authservice.service.KafkaProducer;
 import com.bnifp.mufis.authservice.service.UserService;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -26,6 +28,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final KafkaProducer kafkaProducer;
 
     @Autowired
     private ModelMapper mapper;
@@ -57,6 +60,14 @@ public class UserServiceImpl implements UserService {
         //Error if user not found has been handled by loadUserByUsername
         User user = userRepository.getDistinctTopByUsername(username);
         userRepository.deleteById(user.getId());
+
+        try{
+            kafkaProducer.produce(new Gson().toJson(user));
+        }catch (Exception e){
+            String message = "Successfully Deleted post with id: " + user.getId().toString();
+            return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE, message));
+        }
+
         String message = "Successfully Deleted post with id: " + user.getId().toString();
         return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE, message));
     }
