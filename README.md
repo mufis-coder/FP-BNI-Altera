@@ -21,5 +21,10 @@
 
 - Buka IntelliJ-IDEA untuk setiap service yang ada dan run menggunakan IntelliJ-IDEA tersebut.
 
-    a. post-service
+    a. discovery-service
+
+    b. api-gateway
+
+    c. post-service
+
     b. log-service

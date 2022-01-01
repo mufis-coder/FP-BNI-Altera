@@ -83,6 +83,12 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                     return notAuthenticatedAuthorized(exchange, msg, HttpStatus.FORBIDDEN);
                 }
             }
+            else if(route.equals("/logs")){
+                if(!role.equals("ADMIN")){
+                    String msg = role + " is not authorized to access this resource!";
+                    return notAuthenticatedAuthorized(exchange, msg, HttpStatus.FORBIDDEN);
+                }
+            }
 
             exchange.getRequest().mutate().header("username", String.valueOf(claims.get("username"))).build();
         }
