@@ -19,6 +19,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
@@ -85,6 +86,15 @@ public class AuthServiceImpl implements AuthService {
             String jwt = jwtTokenProvider.generateToken(authentication);
             TokenResponse tokenResponse = new TokenResponse();
             tokenResponse.setToken(jwt);
+
+            User user = userRepository.getDistinctTopByUsername(userInputLogin.getUsername());
+            if (user == null){
+                String message = "User not found!";
+                return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                        HttpStatus.NOT_FOUND);
+            }
+            tokenResponse.setId(user.getId());
+
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(tokenResponse),
                     HttpStatus.OK);
 
