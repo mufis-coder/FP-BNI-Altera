@@ -1,12 +1,16 @@
-package com.bnifp.mufis.postservice.service;
+package com.bnifp.mufis.postservice.service.impl;
 
 import com.bnifp.mufis.postservice.dto.input.PostInput;
 import com.bnifp.mufis.postservice.dto.output.PostOutput;
+import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.Post;
 import com.bnifp.mufis.postservice.repository.PostRepository;
+import com.bnifp.mufis.postservice.service.PostService;
 import org.apache.commons.collections4.IterableUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PostServiceImpl implements PostService{
+public class PostServiceImpl implements PostService {
 
     @Autowired
     private PostRepository postRepository;
@@ -25,6 +29,14 @@ public class PostServiceImpl implements PostService{
     @Autowired
     public void setMapper(ModelMapper mapper){
         this.mapper = mapper;
+    }
+
+    //Check if string is null or empty
+    private Boolean isNullorEmpty(String str){
+        if (str == null || str.isEmpty() || str.trim().isEmpty()) {
+            return true;
+        }
+        return false;
     }
 
     //function to find a Post with id
@@ -56,10 +68,22 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public PostOutput addOne(PostInput input) {
-        Post post = mapper.map(input, Post.class);
-        postRepository.save(post);
-        return this.mapper.map(post, PostOutput.class);
+    public ResponseEntity<BaseResponse> addOne(PostInput postInput) {
+        if(isNullorEmpty(postInput.getTitle())|| isNullorEmpty(postInput.getContent())){
+            String message = "Title and content cannot be null or empty!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message), HttpStatus.BAD_REQUEST);
+        }
+
+        Post post = mapper.map(postInput, Post.class);
+        try{
+            postRepository.save(post);
+        } catch(Exception e){
+            String message = e.getMessage();
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.CONFLICT);
+        }
+
+        return ResponseEntity.ok(new BaseResponse<>(this.mapper.map(post, PostOutput.class)));
     }
 
     @Override

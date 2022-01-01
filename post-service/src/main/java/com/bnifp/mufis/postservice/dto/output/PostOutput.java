@@ -8,5 +8,6 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostOutput {
     private Long id;
+    private String title;
     private String content;
 }

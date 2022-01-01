@@ -1,11 +1,14 @@
 package com.bnifp.mufis.postservice.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
 public class BaseResponse<T> {
     private Boolean success = Boolean.TRUE;
     private String message = "Operation succes";
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
     public BaseResponse(T data){

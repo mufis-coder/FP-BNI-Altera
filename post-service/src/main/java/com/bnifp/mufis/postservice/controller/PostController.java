@@ -70,9 +70,10 @@ public class PostController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<PostOutput>> addOne(@Valid @RequestBody PostInput input){
-        PostOutput output = postService.addOne(input);
-        return ResponseEntity.ok(new BaseResponse<>(output));
+    public ResponseEntity<BaseResponse> addOne(@Valid @RequestBody PostInput input){
+        return postService.addOne(input);
+//        PostOutput output = postService.addOne(input);
+//        return ResponseEntity.ok(new BaseResponse<>(output));
     }
 
     @PutMapping({"/{id}"})
@@ -89,7 +90,7 @@ public class PostController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteOne(@PathVariable Long id){
         Post post = postService.deleteOne(id);
-        writeLog(post); //write log to log-service
+//        writeLog(post); //write log to log-service
         String message = "Successfully Deleted post with id: " + id.toString();
         return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE, message));
     }
