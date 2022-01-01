@@ -1,14 +1,13 @@
 package com.bnifp.mufis.authservice.controller;
 
+import com.bnifp.mufis.authservice.dto.input.UserInputUpdate;
 import com.bnifp.mufis.authservice.dto.response.BaseResponse;
 import com.bnifp.mufis.authservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
@@ -29,10 +28,16 @@ public class UserController {
         return userService.getOne(username);
     }
 
+    @PatchMapping(value="/me")
+    public ResponseEntity<BaseResponse> updateOne(Principal principal,
+                                                  @Valid @RequestBody UserInputUpdate inputUpdate){
+        String username = principal.getName();
+        return userService.updateOne(username, inputUpdate);
+    }
+
     @DeleteMapping("/me")
     public ResponseEntity<BaseResponse> deleteOne(Principal principal){
         String username = principal.getName();
         return userService.deleteOne(username);
-//        writeLog(post); //write log to log-service
     }
 }
