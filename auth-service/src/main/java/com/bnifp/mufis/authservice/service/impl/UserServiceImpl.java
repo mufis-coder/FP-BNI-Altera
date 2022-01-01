@@ -10,6 +10,7 @@ import com.bnifp.mufis.authservice.service.UserService;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,7 +63,11 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(user.getId());
 
         try{
-            kafkaProducer.produce(new Gson().toJson(user));
+            String psn = new JSONObject()
+                    .put("name", "post-service")
+                    .put("data", new Gson().toJson(user))
+                    .toString();
+            kafkaProducer.produce(psn);
         }catch (Exception e){
             String message = "Successfully Deleted post with id: " + user.getId().toString();
             return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE, message));

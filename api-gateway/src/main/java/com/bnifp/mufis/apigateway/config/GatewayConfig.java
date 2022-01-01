@@ -17,9 +17,11 @@ public class GatewayConfig {
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("post", r -> r.path("/posts/**").filters(f -> f.filter(filter)).uri("lb://post" +
-                        "-service"))
-                .route("user", r->r.path("/users/**").filters(f -> f.filter(filter)).uri("lb://auth-service"))
+                .route("post", r -> r.path("/posts/**")
+                        .filters(f -> f.filter(filter)).uri("lb://post-service"))
+                .route("user", r->r.path("/users/**")
+                        .filters(f -> f.filter(filter)).uri("lb://auth-service"))
+                .route("log", r->r.path("/logs/**").uri("lb://log-service")) //tambah filter dan otorisasi admin
                 .route("auth", r->r.path("/auths/**").uri("lb://auth-service"))
                 .route("post-swagger", r->r.path("/post-swagger/**").uri("lb://post-service"))
                 .route("auth-swagger", r->r.path("/auth-swagger/**").uri("lb://auth-service"))
