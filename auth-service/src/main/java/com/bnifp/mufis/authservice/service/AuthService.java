@@ -1,10 +1,11 @@
 package com.bnifp.mufis.authservice.service;
 
-import com.bnifp.mufis.authservice.model.User;
-import com.bnifp.mufis.authservice.payload.TokenResponse;
-import com.bnifp.mufis.authservice.payload.UsernamePassword;
+import com.bnifp.mufis.authservice.dto.input.UserInput;
+import com.bnifp.mufis.authservice.dto.input.UserInputLogin;
+import com.bnifp.mufis.authservice.dto.response.BaseResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
-    User register(UsernamePassword req);
-    TokenResponse generateToken(UsernamePassword req);
+    ResponseEntity<BaseResponse> addOne (UserInput userInput);
+    ResponseEntity<BaseResponse> generateToken(UserInputLogin userInputLogin);
 }

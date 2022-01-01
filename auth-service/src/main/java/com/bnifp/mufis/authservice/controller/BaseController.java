@@ -1,6 +1,6 @@
-package com.bnifp.mufis.postservice.controller;
+package com.bnifp.mufis.authservice.controller;
 
-import com.bnifp.mufis.postservice.dto.response.BaseResponse;
+import com.bnifp.mufis.authservice.dto.response.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -46,12 +46,5 @@ public class BaseController {
         return response;
     }
 
-    @ResponseStatus(code = HttpStatus.CONFLICT)
-    @ResponseBody
-    public BaseResponse<?> httpStatus409(Boolean status, String message) {
-        BaseResponse<?> response = new BaseResponse<>(null);
-        response.setMessage(message);
-        response.setSuccess(false);
-        return response;
-    }
 }
+

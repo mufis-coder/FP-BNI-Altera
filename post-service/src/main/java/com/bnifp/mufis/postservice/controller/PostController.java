@@ -53,7 +53,8 @@ public class PostController extends BaseController {
         PostOutput output = postService.getOne(id);
         if(Objects.isNull(output)){
             String message = "Post with id: " + id.toString() + " is not Found";
-            return ResponseEntity.ok(new BaseResponse<>(Boolean.FALSE, message));
+            httpStatus409(Boolean.FALSE, message);
+//            return ResponseEntity.ok(new BaseResponse<>(Boolean.FALSE, message));
         }
 //        return new ResponseEntity.(new BaseResponse<>(output), 200);
         return ResponseEntity.ok(new BaseResponse<>(output));

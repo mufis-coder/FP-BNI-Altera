@@ -1,20 +1,24 @@
 package com.bnifp.mufis.apigateway.security;
 
+import com.bnifp.mufis.apigateway.dto.response.BaseResponse;
 import com.bnifp.mufis.apigateway.exception.JwtTokenMalformedException;
 import com.bnifp.mufis.apigateway.exception.JwtTokenMissingException;
+import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -26,6 +30,21 @@ public class JwtAuthenticationFilter implements GatewayFilter {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    //response for jwt that doesn't pass authentication and authorization filter
+    private Mono<Void> notAuthenticatedAuthorized(ServerWebExchange exchange,
+                                                  String msg, HttpStatus statusCode){
+        ServerHttpResponse response = exchange.getResponse();
+
+        String message = msg;
+        BaseResponse responseMsg = new BaseResponse<>(Boolean.FALSE, message);
+
+        response.setStatusCode(statusCode);
+        //change object to json -> send it through response
+        byte[] bytes = new Gson().toJson(responseMsg).getBytes(StandardCharsets.UTF_8);
+        DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+        return response.writeWith(Flux.just(buffer));
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -44,31 +63,27 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 return response.setComplete();
             }
 
-//            final String token = request.getHeaders().getOrEmpty("Authorization").get(0);
+            //get token from Header
             final String token = getJWTFromRequest(request);
-            System.out.println(!jwtTokenProvider.validateToken(token));
-            if(!jwtTokenProvider.validateToken(token)){
-                ServerHttpResponse response = exchange.getResponse();
-                response.setStatusCode(HttpStatus.BAD_REQUEST);
-                return response.setComplete();
-            }
-//            try {
-//                System.out.println("Token: " + token);
-//                jwtTokenProvider.validateToken(token);
-//                System.out.println("Token: " + token);
-//                //TODO Validate role
-//
-//            }
-//            catch (JwtTokenMalformedException | JwtTokenMissingException e) {
-//                // e.printStackTrace();
-//
-//                ServerHttpResponse response = exchange.getResponse();
-//                response.setStatusCode(HttpStatus.BAD_REQUEST);
-//
-//                return response.setComplete();
-//            }
 
+            if(!jwtTokenProvider.validateToken(token)){
+                String msg = "JWT Invalid!";
+                return notAuthenticatedAuthorized(exchange, msg, HttpStatus.UNAUTHORIZED);
+            }
+
+            //Forbidden check for authorization
             Claims claims = jwtTokenProvider.getClaims(token);
+            String role = claims.get("role").toString();
+            String route = request.getPath().toString();
+            String method = request.getMethod().toString();
+
+            if(route.equals("/users") && method.equals("GET")) {
+                if(!role.equals("ADMIN")){
+                    String msg = role + " is not authorized to access this resource!";
+                    return notAuthenticatedAuthorized(exchange, msg, HttpStatus.FORBIDDEN);
+                }
+            }
+
             exchange.getRequest().mutate().header("username", String.valueOf(claims.get("username"))).build();
         }
 

@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/auths/**").permitAll()
                 .antMatchers("/auth-swagger/**").permitAll()
                 .anyRequest().authenticated();
         // remove session

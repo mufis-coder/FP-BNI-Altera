@@ -1,30 +1,31 @@
 package com.bnifp.mufis.authservice.controller;
 
-import com.bnifp.mufis.authservice.payload.UsernamePassword;
+import com.bnifp.mufis.authservice.dto.input.UserInput;
+import com.bnifp.mufis.authservice.dto.input.UserInputLogin;
+import com.bnifp.mufis.authservice.dto.response.BaseResponse;
 import com.bnifp.mufis.authservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auths")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController extends BaseController {
 
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UsernamePassword req) {
-        authService.register(req);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<BaseResponse> addOne(@Valid @RequestBody UserInput userInput) {
+        return authService.addOne(userInput);
     }
 
-    @PostMapping("/token")
-    public ResponseEntity<?> generateToken(@RequestBody UsernamePassword req) {
-        return ResponseEntity.ok(authService.generateToken(req));
+    @PostMapping("/login")
+    public ResponseEntity<BaseResponse> generateToken(@RequestBody UserInputLogin userInputLogin) {
+        return authService.generateToken(userInputLogin);
     }
 }
