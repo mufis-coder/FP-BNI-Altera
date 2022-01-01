@@ -21,7 +21,8 @@ public class GatewayConfig {
                         .filters(f -> f.filter(filter)).uri("lb://post-service"))
                 .route("user", r->r.path("/users/**")
                         .filters(f -> f.filter(filter)).uri("lb://auth-service"))
-                .route("log", r->r.path("/logs/**").uri("lb://log-service")) //tambah filter dan otorisasi admin
+                .route("log", r->r.path("/logs/**").
+                        filters(f -> f.filter(filter)).uri("lb://log-service"))
                 .route("auth", r->r.path("/auths/**").uri("lb://auth-service"))
                 .route("post-swagger", r->r.path("/post-swagger/**").uri("lb://post-service"))
                 .route("auth-swagger", r->r.path("/auth-swagger/**").uri("lb://auth-service"))
