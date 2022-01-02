@@ -7,4 +7,6 @@ import org.springframework.http.ResponseEntity;
 public interface PostLikeService {
     ResponseEntity<BaseResponse> addOne(PostLikeInput input, Long userId);
     ResponseEntity<BaseResponse> deleteByUserIdAndPostId(Long userId, Long postId);
+
+    ResponseEntity<BaseResponse>  getAllByPostId(Long postId);
 }

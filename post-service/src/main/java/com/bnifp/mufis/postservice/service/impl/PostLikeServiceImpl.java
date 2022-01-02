@@ -1,11 +1,13 @@
 package com.bnifp.mufis.postservice.service.impl;
 
 import com.bnifp.mufis.postservice.dto.input.PostLikeInput;
+import com.bnifp.mufis.postservice.dto.output.PostLikeOutput;
 import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.PostLike;
 import com.bnifp.mufis.postservice.repository.PostLikeRepository;
 import com.bnifp.mufis.postservice.service.KafkaProducer;
 import com.bnifp.mufis.postservice.service.PostLikeService;
+import org.apache.commons.collections4.IterableUtils;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -77,6 +81,26 @@ public class PostLikeServiceImpl implements PostLikeService {
 
         String message = "Successfully deleted post with user id: " + userId + " and post id: " + postId;
         return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.TRUE, message), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> getAllByPostId(Long postId){
+
+        Iterable<PostLike> postLikes = postLikeRepository.findByPostId(postId);
+        List<PostLike> postLikesList = IterableUtils.toList(postLikes);
+        List<PostLikeOutput> outputs = new ArrayList<>();
+        for(PostLike postLike: postLikesList){
+            outputs.add(mapper.map(postLike, PostLikeOutput.class));
+        }
+
+        if(outputs == null || outputs.isEmpty()){
+            String message = "Post like with post id: " + postId + " is not Found";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
+
     }
 
 }
