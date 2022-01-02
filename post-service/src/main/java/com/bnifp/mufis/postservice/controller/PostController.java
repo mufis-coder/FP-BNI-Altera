@@ -5,10 +5,8 @@ import com.bnifp.mufis.postservice.dto.input.PostInput;
 import com.bnifp.mufis.postservice.dto.output.PostOutput;
 import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.Post;
-import com.bnifp.mufis.postservice.service.KafkaProducer;
+import com.bnifp.mufis.postservice.service.impl.KafkaProducerImpl;
 import com.bnifp.mufis.postservice.service.PostService;
-import com.google.gson.Gson;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
@@ -18,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/posts")
@@ -32,7 +29,7 @@ public class PostController extends BaseController {
     RestTemplate restTemplate;
 
     @Autowired
-    private KafkaProducer producer;
+    private KafkaProducerImpl producer;
 
     //function for write log to log-service
     private void writeLog(Post input){
@@ -66,11 +63,9 @@ public class PostController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteOne(@PathVariable Long id){
-        Post post = postService.deleteOne(id);
+    public ResponseEntity<BaseResponse>  deleteOne(@PathVariable Long id){
 //        writeLog(post); //write log to log-service
-        String message = "Successfully Deleted post with id: " + id.toString();
-        return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE, message));
+        return postService.deleteOne(id);
     }
 
     @GetMapping

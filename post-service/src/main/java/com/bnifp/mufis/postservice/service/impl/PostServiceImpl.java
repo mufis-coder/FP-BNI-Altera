@@ -6,8 +6,10 @@ import com.bnifp.mufis.postservice.dto.output.PostOutputDetail;
 import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.Post;
 import com.bnifp.mufis.postservice.repository.PostRepository;
+import com.bnifp.mufis.postservice.service.KafkaProducer;
 import com.bnifp.mufis.postservice.service.PostService;
 import org.apache.commons.collections4.IterableUtils;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private KafkaProducer kafkaProducer;
 
     @Autowired
     private ModelMapper mapper;
@@ -104,10 +109,26 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post deleteOne(Long id) {
-        Post temp = findPost(id);
-        postRepository.deleteById(id);
-        return temp;
+    public ResponseEntity<BaseResponse> deleteOne(Long id) {
+        Post post = findPost(id);
+        if(Objects.isNull(post)){
+            String message = "Post with id: " + id.toString() + " is not Found";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.NOT_FOUND);
+        }
+        try{
+            String psn = new JSONObject()
+                    .put("name", "post-service")
+                    .put("data", post)
+                    .toString();
+            kafkaProducer.produce(psn);
+            postRepository.deleteById(id);
+        }catch (Exception e){
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (Boolean.TRUE, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        String message = "Successfully Deleted post with id: " + id;
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.TRUE, message), HttpStatus.OK);
     }
 
     @Override
