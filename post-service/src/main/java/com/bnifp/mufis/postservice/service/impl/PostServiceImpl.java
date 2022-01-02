@@ -51,32 +51,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> getOne(Long id) {
-        Post post = findPost(id);;
-        if(Objects.isNull(post)){
-            String message = "Post with id: " + id.toString() + " is not Found";
-            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
-                    HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<BaseResponse>(new BaseResponse<>
-                (this.mapper.map(post, PostOutputDetail.class)), HttpStatus.OK);
-    }
-
-    @Override
-    public List<PostOutput> getAll() {
-        Iterable<Post> posts = postRepository.findAll();
-        List<Post> postList = IterableUtils.toList(posts);
-
-        List<PostOutput> outputs = new ArrayList<>();
-        for(Post post: postList){
-            outputs.add(mapper.map(post, PostOutput.class));
-        }
-
-        return outputs;
-    }
-
-    @Override
     public ResponseEntity<BaseResponse> addOne(PostInput postInput) {
         if(isNullorEmpty(postInput.getTitle())|| isNullorEmpty(postInput.getContent())){
             String message = "Title and content cannot be null or empty!";
@@ -97,11 +71,36 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostOutput updateOne(Long id, PostInput input){
-        Post temp = findPost(id);
-        this.mapper.map(input, temp);
-        postRepository.save(temp);
-        return this.mapper.map(temp, PostOutput.class);
+    public ResponseEntity<BaseResponse> getOne(Long id) {
+        Post post = findPost(id);;
+        if(Objects.isNull(post)){
+            String message = "Post with id: " + id.toString() + " is not Found";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                (this.mapper.map(post, PostOutputDetail.class)), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> updateOne(Long id, PostInput postInput){
+        if(isNullorEmpty(postInput.getTitle())|| isNullorEmpty(postInput.getContent())){
+            String message = "Title and content cannot be null or empty!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.BAD_REQUEST);
+        }
+        Post post = findPost(id);
+        if(Objects.isNull(post)){
+            String message = "Post with id: " + id.toString() + " is not Found";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        this.mapper.map(postInput, post);
+        postRepository.save(post);
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                (this.mapper.map(post, PostOutputDetail.class)), HttpStatus.OK);
     }
 
     @Override
@@ -109,6 +108,19 @@ public class PostServiceImpl implements PostService {
         Post temp = findPost(id);
         postRepository.deleteById(id);
         return temp;
+    }
+
+    @Override
+    public List<PostOutput> getAll() {
+        Iterable<Post> posts = postRepository.findAll();
+        List<Post> postList = IterableUtils.toList(posts);
+
+        List<PostOutput> outputs = new ArrayList<>();
+        for(Post post: postList){
+            outputs.add(mapper.map(post, PostOutput.class));
+        }
+
+        return outputs;
     }
 
 }

@@ -9,13 +9,14 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface PostService {
-    ResponseEntity<BaseResponse> getOne(Long id);
-
-    List<PostOutput> getAll();
 
     ResponseEntity<BaseResponse> addOne(PostInput input);
 
-    PostOutput updateOne(Long id, PostInput input);
+    ResponseEntity<BaseResponse> getOne(Long id);
+
+    ResponseEntity<BaseResponse> updateOne(Long id, PostInput input);
 
     Post deleteOne(Long id);
+
+    List<PostOutput> getAll();
 }

@@ -48,14 +48,9 @@ public class PostController extends BaseController {
        restTemplate.exchange(url, HttpMethod.POST, entity, String.class).getBody();
     }
 
-
-//    //Kafka
-//    @PostMapping("/test")
-//    public void send(@RequestBody String data) {producer.produce(data);}
-
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<PostOutput>>> getAll(){
-        return ResponseEntity.ok( new BaseResponse(postService.getAll()) );
+    @PostMapping
+    public ResponseEntity<BaseResponse> addOne(@Valid @RequestBody PostInput input){
+        return postService.addOne(input);
     }
 
     @GetMapping({"/{id}"})
@@ -63,20 +58,11 @@ public class PostController extends BaseController {
         return postService.getOne(id);
     }
 
-    @PostMapping
-    public ResponseEntity<BaseResponse> addOne(@Valid @RequestBody PostInput input){
-        return postService.addOne(input);
-    }
 
-    @PutMapping({"/{id}"})
-    public ResponseEntity<BaseResponse<PostOutput>> updateOne(@PathVariable Long id,
+    @PatchMapping({"/{id}"})
+    public ResponseEntity<BaseResponse> updateOne(@PathVariable Long id,
                                                               @Valid @RequestBody PostInput input){
-        PostOutput output = postService.updateOne(id, input);
-        if(Objects.isNull(output)){
-            String message = "Post with id: " + id.toString() + " is not Found";
-            return ResponseEntity.ok(new BaseResponse<>(Boolean.FALSE, message));
-        }
-        return ResponseEntity.ok(new BaseResponse<>(output));
+        return postService.updateOne(id, input);
     }
 
     @DeleteMapping("/{id}")
@@ -85,5 +71,10 @@ public class PostController extends BaseController {
 //        writeLog(post); //write log to log-service
         String message = "Successfully Deleted post with id: " + id.toString();
         return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE, message));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<PostOutput>>> getAll(){
+        return ResponseEntity.ok( new BaseResponse(postService.getAll()) );
     }
 }
