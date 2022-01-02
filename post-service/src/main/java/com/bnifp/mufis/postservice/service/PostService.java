@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface PostService {
-    PostOutput getOne(Long id);
+    ResponseEntity<BaseResponse> getOne(Long id);
 
     List<PostOutput> getAll();
 

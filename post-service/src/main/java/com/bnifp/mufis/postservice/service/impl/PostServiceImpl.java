@@ -2,6 +2,7 @@ package com.bnifp.mufis.postservice.service.impl;
 
 import com.bnifp.mufis.postservice.dto.input.PostInput;
 import com.bnifp.mufis.postservice.dto.output.PostOutput;
+import com.bnifp.mufis.postservice.dto.output.PostOutputDetail;
 import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.Post;
 import com.bnifp.mufis.postservice.repository.PostRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -49,9 +51,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostOutput getOne(Long id) {
-        Post temp = findPost(id);
-        return this.mapper.map(temp, PostOutput.class);
+    public ResponseEntity<BaseResponse> getOne(Long id) {
+        Post post = findPost(id);;
+        if(Objects.isNull(post)){
+            String message = "Post with id: " + id.toString() + " is not Found";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                (this.mapper.map(post, PostOutputDetail.class)), HttpStatus.OK);
     }
 
     @Override
@@ -71,7 +80,8 @@ public class PostServiceImpl implements PostService {
     public ResponseEntity<BaseResponse> addOne(PostInput postInput) {
         if(isNullorEmpty(postInput.getTitle())|| isNullorEmpty(postInput.getContent())){
             String message = "Title and content cannot be null or empty!";
-            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.BAD_REQUEST);
         }
 
         Post post = mapper.map(postInput, Post.class);
@@ -82,8 +92,8 @@ public class PostServiceImpl implements PostService {
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
                     HttpStatus.CONFLICT);
         }
-
-        return ResponseEntity.ok(new BaseResponse<>(this.mapper.map(post, PostOutput.class)));
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                (this.mapper.map(post, PostOutput.class)), HttpStatus.OK);
     }
 
     @Override

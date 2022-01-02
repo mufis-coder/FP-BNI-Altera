@@ -48,32 +48,24 @@ public class PostController extends BaseController {
        restTemplate.exchange(url, HttpMethod.POST, entity, String.class).getBody();
     }
 
-    @GetMapping({"/{id}"})
-    public  ResponseEntity<BaseResponse<PostOutput>> getOne(@PathVariable Long id){
-        PostOutput output = postService.getOne(id);
-        if(Objects.isNull(output)){
-            String message = "Post with id: " + id.toString() + " is not Found";
-            httpStatus409(Boolean.FALSE, message);
-//            return ResponseEntity.ok(new BaseResponse<>(Boolean.FALSE, message));
-        }
-//        return new ResponseEntity.(new BaseResponse<>(output), 200);
-        return ResponseEntity.ok(new BaseResponse<>(output));
-    }
 
-    //Kafka
-    @PostMapping("/test")
-    public void send(@RequestBody String data) {producer.produce(data);}
+//    //Kafka
+//    @PostMapping("/test")
+//    public void send(@RequestBody String data) {producer.produce(data);}
 
     @GetMapping
     public ResponseEntity<BaseResponse<List<PostOutput>>> getAll(){
         return ResponseEntity.ok( new BaseResponse(postService.getAll()) );
     }
 
+    @GetMapping({"/{id}"})
+    public  ResponseEntity<BaseResponse> getOne(@PathVariable Long id){
+        return postService.getOne(id);
+    }
+
     @PostMapping
     public ResponseEntity<BaseResponse> addOne(@Valid @RequestBody PostInput input){
         return postService.addOne(input);
-//        PostOutput output = postService.addOne(input);
-//        return ResponseEntity.ok(new BaseResponse<>(output));
     }
 
     @PutMapping({"/{id}"})
