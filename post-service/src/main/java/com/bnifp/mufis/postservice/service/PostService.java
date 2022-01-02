@@ -18,5 +18,5 @@ public interface PostService {
 
     ResponseEntity<BaseResponse> deleteOne(Long id);
 
-    List<PostOutput> getAll();
+    ResponseEntity<BaseResponse> getAll();
 }

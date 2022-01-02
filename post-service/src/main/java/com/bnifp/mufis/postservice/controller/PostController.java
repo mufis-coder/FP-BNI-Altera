@@ -55,7 +55,6 @@ public class PostController extends BaseController {
         return postService.getOne(id);
     }
 
-
     @PatchMapping({"/{id}"})
     public ResponseEntity<BaseResponse> updateOne(@PathVariable Long id,
                                                               @Valid @RequestBody PostInput input){
@@ -63,13 +62,13 @@ public class PostController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse>  deleteOne(@PathVariable Long id){
+    public ResponseEntity<BaseResponse> deleteOne(@PathVariable Long id){
 //        writeLog(post); //write log to log-service
         return postService.deleteOne(id);
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<List<PostOutput>>> getAll(){
-        return ResponseEntity.ok( new BaseResponse(postService.getAll()) );
+    public ResponseEntity<BaseResponse> getAll(){
+        return postService.getAll();
     }
 }

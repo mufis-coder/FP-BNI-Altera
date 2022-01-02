@@ -132,16 +132,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostOutput> getAll() {
+    public ResponseEntity<BaseResponse> getAll() {
         Iterable<Post> posts = postRepository.findAll();
         List<Post> postList = IterableUtils.toList(posts);
 
-        List<PostOutput> outputs = new ArrayList<>();
+        List<PostOutputDetail> outputs = new ArrayList<>();
         for(Post post: postList){
-            outputs.add(mapper.map(post, PostOutput.class));
+            outputs.add(mapper.map(post, PostOutputDetail.class));
         }
-
-        return outputs;
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
     }
 
 }
