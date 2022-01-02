@@ -63,10 +63,10 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<BaseResponse> getAll(){
         Iterable<User> users = userRepository.findAll();
         List<User> userList = IterableUtils.toList(users);
-        List<UserOutput> outputs = new ArrayList<>();
+        List<UserOutputDetail> outputs = new ArrayList<>();
 
         for(User post: userList){
-            outputs.add(mapper.map(post, UserOutput.class));
+            outputs.add(mapper.map(post, UserOutputDetail.class));
         }
         return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
     }
