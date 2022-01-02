@@ -56,7 +56,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> addOne(PostInput postInput) {
+    public ResponseEntity<BaseResponse> addOne(PostInput postInput, Long user_id) {
         if(isNullorEmpty(postInput.getTitle())|| isNullorEmpty(postInput.getContent())){
             String message = "Title and content cannot be null or empty!";
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
@@ -64,6 +64,7 @@ public class PostServiceImpl implements PostService {
         }
 
         Post post = mapper.map(postInput, Post.class);
+        post.setUser_id(user_id);
         try{
             postRepository.save(post);
         } catch(Exception e){
@@ -125,7 +126,7 @@ public class PostServiceImpl implements PostService {
             postRepository.deleteById(id);
         }catch (Exception e){
             return new ResponseEntity<BaseResponse>(new BaseResponse<>
-                    (Boolean.TRUE, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+                    (Boolean.FALSE, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         String message = "Successfully Deleted post with id: " + id;
         return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.TRUE, message), HttpStatus.OK);

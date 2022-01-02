@@ -13,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
@@ -46,8 +47,19 @@ public class PostController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse> addOne(@Valid @RequestBody PostInput input){
-        return postService.addOne(input);
+    public ResponseEntity<BaseResponse> addOne(HttpServletRequest request,
+                                               @Valid @RequestBody PostInput input){
+
+//        String username = request.getHeader("username");
+        Long user_id = Long.parseLong(request.getHeader("id"));
+        String role = request.getHeader("role");
+
+        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
+            String msg = role + " is not authorized to access this resource!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
+        }
+        return postService.addOne(input, user_id);
     }
 
     @GetMapping({"/{id}"})
@@ -56,14 +68,32 @@ public class PostController extends BaseController {
     }
 
     @PatchMapping({"/{id}"})
-    public ResponseEntity<BaseResponse> updateOne(@PathVariable Long id,
+    public ResponseEntity<BaseResponse> updateOne(HttpServletRequest request, @PathVariable Long id,
                                                               @Valid @RequestBody PostInput input){
+
+        Long user_id = Long.parseLong(request.getHeader("id"));
+        String role = request.getHeader("role");
+
+        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
+            String msg = role + " is not authorized to access this resource!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
+        }
         return postService.updateOne(id, input);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse> deleteOne(@PathVariable Long id){
+    public ResponseEntity<BaseResponse> deleteOne(HttpServletRequest request,
+                                                  @PathVariable Long id){
 //        writeLog(post); //write log to log-service
+        Long user_id = Long.parseLong(request.getHeader("id"));
+        String role = request.getHeader("role");
+
+        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
+            String msg = role + " is not authorized to access this resource!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
+        }
         return postService.deleteOne(id);
     }
 

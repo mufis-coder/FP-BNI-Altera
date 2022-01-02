@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PostService {
 
-    ResponseEntity<BaseResponse> addOne(PostInput input);
+    ResponseEntity<BaseResponse> addOne(PostInput input, Long user_id);
 
     ResponseEntity<BaseResponse> getOne(Long id);
 
