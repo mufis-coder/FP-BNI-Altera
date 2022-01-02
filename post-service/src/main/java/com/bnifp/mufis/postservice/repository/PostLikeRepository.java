@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostLikeRepository extends CrudRepository<PostLike, Long> {
+
+    PostLike findByUserIdAndPostId(Long userId, Long postId);
 }
