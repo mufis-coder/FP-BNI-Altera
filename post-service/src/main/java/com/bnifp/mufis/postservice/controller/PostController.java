@@ -7,6 +7,9 @@ import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.Post;
 import com.bnifp.mufis.postservice.service.impl.KafkaProducerImpl;
 import com.bnifp.mufis.postservice.service.PostService;
+import com.google.gson.JsonObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
@@ -100,5 +103,13 @@ public class PostController extends BaseController {
     @GetMapping
     public ResponseEntity<BaseResponse> getAll(){
         return postService.getAll();
+    }
+
+    @GetMapping("/details/{id}")
+    public ResponseEntity<BaseResponse> getOneDetail(HttpServletRequest request,
+                                                     @PathVariable Long id){
+
+        return postService.getOneDetail(request.getHeader("Authorization"), id);
+
     }
 }

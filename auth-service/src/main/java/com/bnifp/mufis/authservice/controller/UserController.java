@@ -28,6 +28,11 @@ public class UserController {
         return userService.getOne(username);
     }
 
+    @GetMapping({"/{id}"})
+    public  ResponseEntity<BaseResponse> getOneById(@PathVariable Long id){
+        return userService.getOneById(id);
+    }
+
     @PatchMapping(value="/me")
     public ResponseEntity<BaseResponse> updateOne(Principal principal,
                                                   @Valid @RequestBody UserInputUpdate inputUpdate){

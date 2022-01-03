@@ -25,6 +25,7 @@ import org.apache.commons.collections4.IterableUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -57,6 +58,12 @@ public class UserServiceImpl implements UserService {
         //Error if user not found has been handled by loadUserByUsername
         User user = userRepository.getDistinctTopByUsername(username);
         UserOutputDetail userDetail = this.mapper.map(user, UserOutputDetail.class);
+        return ResponseEntity.ok(new BaseResponse<>(userDetail));
+    }
+
+    public ResponseEntity<BaseResponse> getOneById(Long id){
+        Optional<User> user = userRepository.findById(id);
+        UserOutputDetail userDetail = this.mapper.map(user.get(), UserOutputDetail.class);
         return ResponseEntity.ok(new BaseResponse<>(userDetail));
     }
 

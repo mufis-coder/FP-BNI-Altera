@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -13,9 +14,11 @@ import java.util.Date;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostOutputDetail {
     private Long id;
-    private Long user_id;
+    private UserOutput createdBy;
     private String title;
     private String content;
+    private Long totalLike;
+    private List<PostCommentOutput> comments;
     private Date createdAt;
     private Date updatedAt;
 }

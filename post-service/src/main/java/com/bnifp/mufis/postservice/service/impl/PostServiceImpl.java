@@ -1,28 +1,42 @@
 package com.bnifp.mufis.postservice.service.impl;
 
+import com.bnifp.mufis.postservice.dto.input.LogInput;
 import com.bnifp.mufis.postservice.dto.input.PostInput;
-import com.bnifp.mufis.postservice.dto.output.PostOutput;
-import com.bnifp.mufis.postservice.dto.output.PostOutputDetail;
+import com.bnifp.mufis.postservice.dto.output.*;
 import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.Post;
+import com.bnifp.mufis.postservice.model.PostComment;
+import com.bnifp.mufis.postservice.model.PostLike;
+import com.bnifp.mufis.postservice.repository.PostCommentRepository;
+import com.bnifp.mufis.postservice.repository.PostLikeRepository;
 import com.bnifp.mufis.postservice.repository.PostRepository;
 import com.bnifp.mufis.postservice.service.KafkaProducer;
 import com.bnifp.mufis.postservice.service.PostService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections4.IterableUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostServiceImpl implements PostService {
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
+    private PostLikeRepository postLikeRepository;
+
+    @Autowired
+    private PostCommentRepository postCommentRepository;
 
     @Autowired
     private PostRepository postRepository;
@@ -86,7 +100,59 @@ public class PostServiceImpl implements PostService {
         }
 
         return new ResponseEntity<BaseResponse>(new BaseResponse<>
-                (this.mapper.map(post, PostOutputDetail.class)), HttpStatus.OK);
+                (this.mapper.map(post, PostOutput.class)), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> getOneDetail(String token, Long id){
+        Post post = findPost(id);;
+        if(Objects.isNull(post)){
+            String message = "Post with id: " + id.toString() + " is not Found";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            String url = "http://localhost:9000/users/" + post.getUser_id().toString();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", token);
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            HttpEntity<LogInput> entity = new HttpEntity<>(null, headers);
+
+            String response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class).getBody();
+
+            JSONObject userJson = new JSONObject(response);
+            UserOutput userObj = new ObjectMapper().readValue(userJson.get("data").toString(),
+                    UserOutput.class);
+
+            PostOutputDetail postDetail = this.mapper.map(post, PostOutputDetail.class);
+            postDetail.setCreatedBy(userObj);
+
+            Iterable<PostLike> postLikes = postLikeRepository.findByPostId(post.getId());
+            List<PostLike> postLikesList = IterableUtils.toList(postLikes);
+
+            Iterable<PostComment> postComments = postCommentRepository.findByPostId(post.getId());
+            List<PostComment> postCommentList = IterableUtils.toList(postComments);
+            List<PostCommentOutput> outputs = new ArrayList<>();
+            for(PostComment postComment: postCommentList){
+                outputs.add(mapper.map(postComment, PostCommentOutput.class));
+            }
+
+            postDetail.setTotalLike((long) postLikesList.size());
+            postDetail.setComments(outputs);
+
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (postDetail), HttpStatus.OK);
+        }catch (JSONException e){
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                (Boolean.FALSE, "Operation failed"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -106,7 +172,7 @@ public class PostServiceImpl implements PostService {
         this.mapper.map(postInput, post);
         postRepository.save(post);
         return new ResponseEntity<BaseResponse>(new BaseResponse<>
-                (this.mapper.map(post, PostOutputDetail.class)), HttpStatus.OK);
+                (this.mapper.map(post, PostOutput.class)), HttpStatus.OK);
     }
 
     @Override
@@ -137,9 +203,9 @@ public class PostServiceImpl implements PostService {
         Iterable<Post> posts = postRepository.findAll();
         List<Post> postList = IterableUtils.toList(posts);
 
-        List<PostOutputDetail> outputs = new ArrayList<>();
+        List<PostOutput> outputs = new ArrayList<>();
         for(Post post: postList){
-            outputs.add(mapper.map(post, PostOutputDetail.class));
+            outputs.add(mapper.map(post, PostOutput.class));
         }
         return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
     }
