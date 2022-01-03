@@ -9,4 +9,5 @@ public interface PostLikeService {
     ResponseEntity<BaseResponse> deleteByUserIdAndPostId(Long userId, Long postId);
 
     ResponseEntity<BaseResponse>  getAllByPostId(Long postId);
+    ResponseEntity<BaseResponse> getAll();
 }

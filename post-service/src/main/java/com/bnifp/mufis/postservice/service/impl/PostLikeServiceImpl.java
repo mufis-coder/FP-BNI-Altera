@@ -2,7 +2,9 @@ package com.bnifp.mufis.postservice.service.impl;
 
 import com.bnifp.mufis.postservice.dto.input.PostLikeInput;
 import com.bnifp.mufis.postservice.dto.output.PostLikeOutput;
+import com.bnifp.mufis.postservice.dto.output.PostOutputDetail;
 import com.bnifp.mufis.postservice.dto.response.BaseResponse;
+import com.bnifp.mufis.postservice.model.Post;
 import com.bnifp.mufis.postservice.model.PostLike;
 import com.bnifp.mufis.postservice.repository.PostLikeRepository;
 import com.bnifp.mufis.postservice.service.KafkaProducer;
@@ -81,6 +83,18 @@ public class PostLikeServiceImpl implements PostLikeService {
 
         String message = "Successfully deleted post with user id: " + userId + " and post id: " + postId;
         return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.TRUE, message), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> getAll(){
+        Iterable<PostLike> postLikes = postLikeRepository.findAll();
+        List<PostLike> PostLikeList = IterableUtils.toList(postLikes);
+
+        List<PostLikeOutput> outputs = new ArrayList<>();
+        for(PostLike postLike: PostLikeList){
+            outputs.add(mapper.map(postLike, PostLikeOutput.class));
+        }
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
     }
 
     @Override

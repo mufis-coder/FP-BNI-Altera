@@ -34,14 +34,8 @@ public class PostLikeController extends BaseController {
 
     @GetMapping
     public ResponseEntity<BaseResponse> getAll(HttpServletRequest request){
-        Long postId = Long.parseLong(request.getHeader("PostId"));
-        if(!(postId==null)){
-            return postLikeService.getAllByPostId(postId);
-        }
-
-        String message = "Data not found!";
-        return new ResponseEntity<BaseResponse>(new BaseResponse<>
-                (Boolean.FALSE, message), HttpStatus.NOT_FOUND);
+        return postLikeService.getAll();
+//        postLikeService.getAllByPostId(postId);
     }
 
     @DeleteMapping()
