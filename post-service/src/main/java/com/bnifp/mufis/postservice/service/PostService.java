@@ -2,18 +2,23 @@ package com.bnifp.mufis.postservice.service;
 
 import com.bnifp.mufis.postservice.dto.input.PostInput;
 import com.bnifp.mufis.postservice.dto.output.PostOutput;
+import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.Post;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface PostService {
-    PostOutput getOne(Long id);
 
-    List<PostOutput> getAll();
+    ResponseEntity<BaseResponse> addOne(PostInput input, Long user_id);
 
-    PostOutput addOne(PostInput input);
+    ResponseEntity<BaseResponse> getOne(Long id);
 
-    PostOutput updateOne(Long id, PostInput input);
+    ResponseEntity<BaseResponse> getOneDetail(String token, Long id);
 
-    Post deleteOne(Long id);
+    ResponseEntity<BaseResponse> updateOne(Long id, PostInput input);
+
+    ResponseEntity<BaseResponse> deleteOne(Long id);
+
+    ResponseEntity<BaseResponse> getAll();
 }

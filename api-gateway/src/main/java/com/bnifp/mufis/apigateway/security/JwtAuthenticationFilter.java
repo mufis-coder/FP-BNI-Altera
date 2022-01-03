@@ -90,7 +90,10 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 }
             }
 
-            exchange.getRequest().mutate().header("username", String.valueOf(claims.get("username"))).build();
+            exchange.getRequest().mutate().header("username", String.valueOf(claims.get("username")))
+                    .header("id", String.valueOf(claims.get("id")))
+                    .header("role", String.valueOf(claims.get("role")))
+                    .build();
         }
 
         return chain.filter(exchange);

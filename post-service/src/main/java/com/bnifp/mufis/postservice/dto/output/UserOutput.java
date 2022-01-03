@@ -1,41 +1,26 @@
-package com.bnifp.mufis.postservice.model;
+package com.bnifp.mufis.postservice.dto.output;
 
 import lombok.*;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
 
-@Entity
-@Table(name="posts")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserOutput {
     private Long id;
-
-    private Long user_id;
-
-    private String title;
-
-    @Column(name = "content")
-    private String content;
-
-    @Column(name = "created_at")
-    @CreationTimestamp
+    private String fullname;
+    private String username;
+    private String email;
+    private String role;
+    private String registerFrom;
     protected Date createdAt;
-
-    @Column(name = "updated_at")
-    @UpdateTimestamp
     protected Date updatedAt;
 }

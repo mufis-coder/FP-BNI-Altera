@@ -12,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserOutputDetail {
+    private Long id;
     private String fullname;
     private String username;
     private String email;

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
     ResponseEntity<BaseResponse> getOne(String username);
+    ResponseEntity<BaseResponse> getOneById(Long id);
     ResponseEntity<BaseResponse> getAll();
     ResponseEntity<BaseResponse> deleteOne(String username);
     ResponseEntity<BaseResponse> updateOne(String username, UserInputUpdate inputUpdate);

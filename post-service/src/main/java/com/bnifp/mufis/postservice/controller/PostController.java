@@ -5,20 +5,21 @@ import com.bnifp.mufis.postservice.dto.input.PostInput;
 import com.bnifp.mufis.postservice.dto.output.PostOutput;
 import com.bnifp.mufis.postservice.dto.response.BaseResponse;
 import com.bnifp.mufis.postservice.model.Post;
-import com.bnifp.mufis.postservice.service.KafkaProducer;
+import com.bnifp.mufis.postservice.service.impl.KafkaProducerImpl;
 import com.bnifp.mufis.postservice.service.PostService;
-import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/posts")
@@ -32,7 +33,7 @@ public class PostController extends BaseController {
     RestTemplate restTemplate;
 
     @Autowired
-    private KafkaProducer producer;
+    private KafkaProducerImpl producer;
 
     //function for write log to log-service
     private void writeLog(Post input){
@@ -48,49 +49,67 @@ public class PostController extends BaseController {
        restTemplate.exchange(url, HttpMethod.POST, entity, String.class).getBody();
     }
 
-    @GetMapping({"/{id}"})
-    public  ResponseEntity<BaseResponse<PostOutput>> getOne(@PathVariable Long id){
-        PostOutput output = postService.getOne(id);
-        if(Objects.isNull(output)){
-            String message = "Post with id: " + id.toString() + " is not Found";
-            httpStatus409(Boolean.FALSE, message);
-//            return ResponseEntity.ok(new BaseResponse<>(Boolean.FALSE, message));
-        }
-//        return new ResponseEntity.(new BaseResponse<>(output), 200);
-        return ResponseEntity.ok(new BaseResponse<>(output));
-    }
-
-    //Kafka
-    @PostMapping("/test")
-    public void send(@RequestBody String data) {producer.produce(data);}
-
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<PostOutput>>> getAll(){
-        return ResponseEntity.ok( new BaseResponse(postService.getAll()) );
-    }
-
     @PostMapping
-    public ResponseEntity<BaseResponse<PostOutput>> addOne(@Valid @RequestBody PostInput input){
-        PostOutput output = postService.addOne(input);
-        return ResponseEntity.ok(new BaseResponse<>(output));
+    public ResponseEntity<BaseResponse> addOne(HttpServletRequest request,
+                                               @Valid @RequestBody PostInput input){
+
+//        String username = request.getHeader("username");
+        Long user_id = Long.parseLong(request.getHeader("id"));
+        String role = request.getHeader("role");
+
+        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
+            String msg = role + " is not authorized to access this resource!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
+        }
+        return postService.addOne(input, user_id);
     }
 
-    @PutMapping({"/{id}"})
-    public ResponseEntity<BaseResponse<PostOutput>> updateOne(@PathVariable Long id,
+    @GetMapping({"/{id}"})
+    public  ResponseEntity<BaseResponse> getOne(@PathVariable Long id){
+        return postService.getOne(id);
+    }
+
+    @PatchMapping({"/{id}"})
+    public ResponseEntity<BaseResponse> updateOne(HttpServletRequest request, @PathVariable Long id,
                                                               @Valid @RequestBody PostInput input){
-        PostOutput output = postService.updateOne(id, input);
-        if(Objects.isNull(output)){
-            String message = "Post with id: " + id.toString() + " is not Found";
-            return ResponseEntity.ok(new BaseResponse<>(Boolean.FALSE, message));
+
+        Long user_id = Long.parseLong(request.getHeader("id"));
+        String role = request.getHeader("role");
+
+        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
+            String msg = role + " is not authorized to access this resource!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
         }
-        return ResponseEntity.ok(new BaseResponse<>(output));
+        return postService.updateOne(id, input);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteOne(@PathVariable Long id){
-        Post post = postService.deleteOne(id);
-        writeLog(post); //write log to log-service
-        String message = "Successfully Deleted post with id: " + id.toString();
-        return ResponseEntity.ok(new BaseResponse<>(Boolean.TRUE, message));
+    public ResponseEntity<BaseResponse> deleteOne(HttpServletRequest request,
+                                                  @PathVariable Long id){
+//        writeLog(post); //write log to log-service
+        Long user_id = Long.parseLong(request.getHeader("id"));
+        String role = request.getHeader("role");
+
+        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
+            String msg = role + " is not authorized to access this resource!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
+        }
+        return postService.deleteOne(id);
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse> getAll(){
+        return postService.getAll();
+    }
+
+    @GetMapping("/details/{id}")
+    public ResponseEntity<BaseResponse> getOneDetail(HttpServletRequest request,
+                                                     @PathVariable Long id){
+
+        return postService.getOneDetail(request.getHeader("Authorization"), id);
+
     }
 }

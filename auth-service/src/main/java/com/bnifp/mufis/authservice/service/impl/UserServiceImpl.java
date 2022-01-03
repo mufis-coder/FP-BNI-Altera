@@ -25,6 +25,7 @@ import org.apache.commons.collections4.IterableUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -60,13 +61,19 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(new BaseResponse<>(userDetail));
     }
 
+    public ResponseEntity<BaseResponse> getOneById(Long id){
+        Optional<User> user = userRepository.findById(id);
+        UserOutputDetail userDetail = this.mapper.map(user.get(), UserOutputDetail.class);
+        return ResponseEntity.ok(new BaseResponse<>(userDetail));
+    }
+
     public ResponseEntity<BaseResponse> getAll(){
         Iterable<User> users = userRepository.findAll();
         List<User> userList = IterableUtils.toList(users);
-        List<UserOutput> outputs = new ArrayList<>();
+        List<UserOutputDetail> outputs = new ArrayList<>();
 
         for(User post: userList){
-            outputs.add(mapper.map(post, UserOutput.class));
+            outputs.add(mapper.map(post, UserOutputDetail.class));
         }
         return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
     }

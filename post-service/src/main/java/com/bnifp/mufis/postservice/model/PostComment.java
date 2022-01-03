@@ -1,35 +1,30 @@
 package com.bnifp.mufis.postservice.model;
 
 import lombok.*;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="posts")
+@Table(name="post_comments")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Post {
+public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long user_id;
+    @Column(name = "user_id")
+    private Long userId;
 
-    private String title;
+    @Column(name = "post_id")
+    private Long postId;
 
-    @Column(name = "content")
-    private String content;
+    private String comment;
 
     @Column(name = "created_at")
     @CreationTimestamp

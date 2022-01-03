@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PostInput {
-    private String title;
-    private String content;
+public class PostCommentInput {
+    private Long postId;
+    private String comment;
 }
