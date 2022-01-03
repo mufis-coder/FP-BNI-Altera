@@ -76,36 +76,44 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Override
     public ResponseEntity<BaseResponse> getOne(Long id) {
-        PostComment post = findPost(id);;
-        if(Objects.isNull(post)){
+        PostComment postComment = findPost(id);;
+        if(Objects.isNull(postComment)){
             String message = "Post comment with id: " + id.toString() + " is not Found";
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
                     HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<BaseResponse>(new BaseResponse<>
-                (this.mapper.map(post, PostCommentOutput.class)), HttpStatus.OK);
+                (this.mapper.map(postComment, PostCommentOutput.class)), HttpStatus.OK);
     }
-//
-//    @Override
-//    public ResponseEntity<BaseResponse> updateOne(Long id, PostInput postInput){
-//        if(isNullorEmpty(postInput.getTitle())|| isNullorEmpty(postInput.getContent())){
-//            String message = "Title and content cannot be null or empty!";
-//            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
-//                    HttpStatus.BAD_REQUEST);
-//        }
-//        Post post = findPost(id);
-//        if(Objects.isNull(post)){
-//            String message = "Post with id: " + id.toString() + " is not Found";
-//            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
-//                    HttpStatus.NOT_FOUND);
-//        }
-//
-//        this.mapper.map(postInput, post);
-//        postRepository.save(post);
-//        return new ResponseEntity<BaseResponse>(new BaseResponse<>
-//                (this.mapper.map(post, PostOutputDetail.class)), HttpStatus.OK);
-//    }
+
+    @Override
+    public ResponseEntity<BaseResponse> updateOne(Long id, PostCommentInput input, Long userId){
+        if(isNullorEmpty(input.getComment()) || input.getPostId() == null){
+            String message = "Post id and comment cannot be null or empty!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        PostComment postComment = findPost(id);
+        if(Objects.isNull(postComment)){
+            String message = "Post comment with id: " + id.toString() + " is not Found";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.NOT_FOUND);
+        }
+        if(postComment.getUserId() != userId){
+            String message = "Forbidden! You are not the owner of this comment!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+//        this.mapper.map(input, postComment);
+        postComment.setComment(input.getComment());
+        postComment.setPostId(input.getPostId());
+        postCommentRepository.save(postComment);
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                (this.mapper.map(postComment, PostCommentOutput.class)), HttpStatus.OK);
+    }
 //
 //    @Override
 //    public ResponseEntity<BaseResponse> deleteOne(Long id) {
