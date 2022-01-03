@@ -48,22 +48,16 @@ public class PostCommentController {
         return postCommentService.updateOne(id, input, userId);
     }
 
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<BaseResponse> deleteOne(HttpServletRequest request,
-//                                                  @PathVariable Long id){
-////        writeLog(post); //write log to log-service
-//        Long user_id = Long.parseLong(request.getHeader("id"));
-//        String role = request.getHeader("role");
-//
-//        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
-//            String msg = role + " is not authorized to access this resource!";
-//            return new ResponseEntity<BaseResponse>(new BaseResponse<>
-//                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
-//        }
-//        return postService.deleteOne(id);
-//    }
-//
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse> deleteOne(HttpServletRequest request,
+                                                  @PathVariable Long id){
+        Long userId = Long.parseLong(request.getHeader("id"));
+        String role = request.getHeader("role");
+
+        return postCommentService.deleteOne(id, userId);
+    }
+
     @GetMapping
     public ResponseEntity<BaseResponse> getAll(){
         return postCommentService.getAll();

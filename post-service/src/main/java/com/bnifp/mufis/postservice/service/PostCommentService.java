@@ -9,10 +9,9 @@ public interface PostCommentService {
     ResponseEntity<BaseResponse> addOne(PostCommentInput input, Long userId);
 
     ResponseEntity<BaseResponse> getOne(Long id);
-//
     ResponseEntity<BaseResponse> updateOne(Long id, PostCommentInput input, Long userId);
-//
-//    ResponseEntity<BaseResponse> deleteOne(Long id);
-//
+
+    ResponseEntity<BaseResponse> deleteOne(Long id, Long userId);
+
     ResponseEntity<BaseResponse> getAll();
 }

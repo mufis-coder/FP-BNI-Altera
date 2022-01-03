@@ -114,30 +114,35 @@ public class PostCommentServiceImpl implements PostCommentService {
         return new ResponseEntity<BaseResponse>(new BaseResponse<>
                 (this.mapper.map(postComment, PostCommentOutput.class)), HttpStatus.OK);
     }
-//
-//    @Override
-//    public ResponseEntity<BaseResponse> deleteOne(Long id) {
-//        Post post = findPost(id);
-//        if(Objects.isNull(post)){
-//            String message = "Post with id: " + id.toString() + " is not Found";
-//            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
-//                    HttpStatus.NOT_FOUND);
-//        }
-//        try{
-//            String psn = new JSONObject()
-//                    .put("name", "post-service")
-//                    .put("data", post)
-//                    .toString();
-//            kafkaProducer.produce(psn);
-//            postRepository.deleteById(id);
-//        }catch (Exception e){
-//            return new ResponseEntity<BaseResponse>(new BaseResponse<>
-//                    (Boolean.FALSE, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//        String message = "Successfully Deleted post with id: " + id;
-//        return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.TRUE, message), HttpStatus.OK);
-//    }
-//
+
+    @Override
+    public ResponseEntity<BaseResponse> deleteOne(Long id, Long userId) {
+        PostComment postComment = findPost(id);
+        if(Objects.isNull(postComment)){
+            String message = "Post comment with id: " + id.toString() + " is not Found";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.NOT_FOUND);
+        }
+        if(postComment.getUserId() != userId){
+            String message = "Forbidden! You are not the owner of this comment!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.BAD_REQUEST);
+        }
+        try{
+            String psn = new JSONObject()
+                    .put("name", "post-comment-service")
+                    .put("data", postComment)
+                    .toString();
+            kafkaProducer.produce(psn);
+            postCommentRepository.deleteById(id);
+        }catch (Exception e){
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (Boolean.FALSE, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        String message = "Successfully Deleted post with id: " + id;
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.TRUE, message), HttpStatus.OK);
+    }
+
     @Override
     public ResponseEntity<BaseResponse> getAll() {
         Iterable<PostComment> postComments = postCommentRepository.findAll();
