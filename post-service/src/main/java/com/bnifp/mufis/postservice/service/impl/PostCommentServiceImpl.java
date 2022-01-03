@@ -138,15 +138,15 @@ public class PostCommentServiceImpl implements PostCommentService {
 //        return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.TRUE, message), HttpStatus.OK);
 //    }
 //
-//    @Override
-//    public ResponseEntity<BaseResponse> getAll() {
-//        Iterable<Post> posts = postRepository.findAll();
-//        List<Post> postList = IterableUtils.toList(posts);
-//
-//        List<PostOutputDetail> outputs = new ArrayList<>();
-//        for(Post post: postList){
-//            outputs.add(mapper.map(post, PostOutputDetail.class));
-//        }
-//        return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
-//    }
+    @Override
+    public ResponseEntity<BaseResponse> getAll() {
+        Iterable<PostComment> postComments = postCommentRepository.findAll();
+        List<PostComment> postCommentList = IterableUtils.toList(postComments);
+
+        List<PostCommentOutput> outputs = new ArrayList<>();
+        for(PostComment post: postCommentList){
+            outputs.add(mapper.map(post, PostCommentOutput.class));
+        }
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
+    }
 }

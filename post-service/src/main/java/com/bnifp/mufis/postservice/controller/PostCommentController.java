@@ -64,8 +64,8 @@ public class PostCommentController {
 //        return postService.deleteOne(id);
 //    }
 //
-//    @GetMapping
-//    public ResponseEntity<BaseResponse> getAll(){
-//        return postService.getAll();
-//    }
+    @GetMapping
+    public ResponseEntity<BaseResponse> getAll(){
+        return postCommentService.getAll();
+    }
 }

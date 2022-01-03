@@ -14,5 +14,5 @@ public interface PostCommentService {
 //
 //    ResponseEntity<BaseResponse> deleteOne(Long id);
 //
-//    ResponseEntity<BaseResponse> getAll();
+    ResponseEntity<BaseResponse> getAll();
 }
