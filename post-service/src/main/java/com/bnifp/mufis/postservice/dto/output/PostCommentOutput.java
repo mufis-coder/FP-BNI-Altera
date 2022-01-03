@@ -17,7 +17,7 @@ import java.util.Date;
 public class PostCommentOutput {
     private Long id;
     private Long userId;
-    private Long postId;
+//    private Long postId;
     private String comment;
     protected Date createdAt;
     protected Date updatedAt;

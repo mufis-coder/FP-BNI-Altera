@@ -35,26 +35,41 @@ public class PostCommentController {
 
     @GetMapping({"/{id}"})
     public  ResponseEntity<BaseResponse> getOne(@PathVariable Long id){
-        return null;
+        return postCommentService.getOne(id);
     }
 
-    @PatchMapping({"/{id}"})
-    public ResponseEntity<BaseResponse> updateOne(HttpServletRequest request, @PathVariable Long id,
-                                                  @Valid @RequestBody PostCommentInput input){
-        Long user_id = Long.parseLong(request.getHeader("id"));
-        String role = request.getHeader("role");
-
-        return null;
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse> deleteOne(HttpServletRequest request,
-                                                  @PathVariable Long id){
-        return null;
-    }
-
-    @GetMapping
-    public ResponseEntity<BaseResponse> getAll(){
-        return null;
-    }
+//    @PatchMapping({"/{id}"})
+//    public ResponseEntity<BaseResponse> updateOne(HttpServletRequest request, @PathVariable Long id,
+//                                                  @Valid @RequestBody PostInput input){
+//
+//        Long user_id = Long.parseLong(request.getHeader("id"));
+//        String role = request.getHeader("role");
+//
+//        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
+//            String msg = role + " is not authorized to access this resource!";
+//            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+//                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
+//        }
+//        return postService.updateOne(id, input);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<BaseResponse> deleteOne(HttpServletRequest request,
+//                                                  @PathVariable Long id){
+////        writeLog(post); //write log to log-service
+//        Long user_id = Long.parseLong(request.getHeader("id"));
+//        String role = request.getHeader("role");
+//
+//        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
+//            String msg = role + " is not authorized to access this resource!";
+//            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+//                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
+//        }
+//        return postService.deleteOne(id);
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<BaseResponse> getAll(){
+//        return postService.getAll();
+//    }
 }

@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 public interface PostCommentService {
     ResponseEntity<BaseResponse> addOne(PostCommentInput input, Long userId);
 
-//    ResponseEntity<BaseResponse> getOne(Long id);
+    ResponseEntity<BaseResponse> getOne(Long id);
 //
 //    ResponseEntity<BaseResponse> updateOne(Long id, PostCommentInput input);
 //

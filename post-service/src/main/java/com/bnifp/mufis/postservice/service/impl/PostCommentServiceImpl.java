@@ -44,14 +44,14 @@ public class PostCommentServiceImpl implements PostCommentService {
         return false;
     }
 
-//    //function to find a Post with id
-//    private Post findPost(Long id){
-//        Optional<Post> post = postRepository.findById(id);
-//        if (post.isEmpty()) {
-//            return null;
-//        }
-//        return post.get();
-//    }
+    //function to find a Post with id
+    private PostComment findPost(Long id){
+        Optional<PostComment> post = postCommentRepository.findById(id);
+        if (post.isEmpty()) {
+            return null;
+        }
+        return post.get();
+    }
 
     @Override
     public ResponseEntity<BaseResponse> addOne(PostCommentInput input, Long userId) {
@@ -73,19 +73,19 @@ public class PostCommentServiceImpl implements PostCommentService {
         return new ResponseEntity<BaseResponse>(new BaseResponse<>
                 (Boolean.TRUE, "Operation succes"), HttpStatus.OK);
     }
-//
-//    @Override
-//    public ResponseEntity<BaseResponse> getOne(Long id) {
-//        Post post = findPost(id);;
-//        if(Objects.isNull(post)){
-//            String message = "Post with id: " + id.toString() + " is not Found";
-//            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
-//                    HttpStatus.NOT_FOUND);
-//        }
-//
-//        return new ResponseEntity<BaseResponse>(new BaseResponse<>
-//                (this.mapper.map(post, PostOutputDetail.class)), HttpStatus.OK);
-//    }
+
+    @Override
+    public ResponseEntity<BaseResponse> getOne(Long id) {
+        PostComment post = findPost(id);;
+        if(Objects.isNull(post)){
+            String message = "Post comment with id: " + id.toString() + " is not Found";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, message),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                (this.mapper.map(post, PostCommentOutput.class)), HttpStatus.OK);
+    }
 //
 //    @Override
 //    public ResponseEntity<BaseResponse> updateOne(Long id, PostInput postInput){
