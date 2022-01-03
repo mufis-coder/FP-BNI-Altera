@@ -21,6 +21,8 @@ public class GatewayConfig {
                         .filters(f -> f.filter(filter)).uri("lb://post-service"))
                 .route("post-like", r -> r.path("/post-likes/**")
                         .filters(f -> f.filter(filter)).uri("lb://post-service"))
+                .route("post-comment", r -> r.path("/post-comments/**")
+                        .filters(f -> f.filter(filter)).uri("lb://post-service"))
                 .route("user", r->r.path("/users/**")
                         .filters(f -> f.filter(filter)).uri("lb://auth-service"))
                 .route("log", r->r.path("/logs/**").
