@@ -1,0 +1,16 @@
+package com.bnifp.mufis.categoryservice.dto.output;
+
+import lombok.*;
+
+import java.util.Date;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class CategoryOutput {
+    private Long id;
+    private Long name;
+    private Date createdAt;
+    private Date updatedAt;
+}
