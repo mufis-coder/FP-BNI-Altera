@@ -6,17 +6,14 @@ import com.bnifp.mufis.categoryservice.exception.InputNullException;
 import com.bnifp.mufis.categoryservice.model.Category;
 import com.bnifp.mufis.categoryservice.repository.CategoryRepository;
 import com.bnifp.mufis.categoryservice.service.CategoryService;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.client.RestTemplate;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
+    @Autowired
     private CategoryRepository categoryRepository;
 
 //    @Autowired
@@ -24,6 +21,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    public void setMapper(ModelMapper mapper){
+        this.mapper = mapper;
+    }
 
     //Check if string is null or empty
     private Boolean isNullorEmpty(String str){
@@ -38,9 +40,9 @@ public class CategoryServiceImpl implements CategoryService {
         if(isNullorEmpty(categoryInput.getName())){
             throw new InputNullException("Name cannot be null or empty!");
         }
-        Category category = mapper.map(categoryInput, Category.class);
+        Category category = this.mapper.map(categoryInput, Category.class);
         categoryRepository.save(category);
-        return mapper.map(category, CategoryOutput.class);
+        return this.mapper.map(category, CategoryOutput.class);
     }
 
 }

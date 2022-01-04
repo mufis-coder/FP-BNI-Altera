@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CategoryOutput {
     private Long id;
-    private Long name;
+    private String name;
     private Date createdAt;
     private Date updatedAt;
 }

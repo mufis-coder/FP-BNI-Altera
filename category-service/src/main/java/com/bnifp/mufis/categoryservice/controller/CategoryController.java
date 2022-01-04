@@ -41,6 +41,7 @@ public class CategoryController extends BaseController {
 
         try{
             CategoryOutput categoryOutput = categoryService.addOne(input);
+            System.out.println(categoryOutput.toString());
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(categoryOutput),
                     HttpStatus.OK);
 
