@@ -75,7 +75,9 @@ public class CategoryController extends BaseController {
             String msg = role + " is not authorized to access this resource!";
             return new ResponseEntity<BaseResponse>(new BaseResponse<>
                     (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
-        }try{
+        }
+
+        try{
             CategoryOutput categoryOutput = categoryService.updateOne(id, input);
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(categoryOutput),
                     HttpStatus.OK);
@@ -89,21 +91,28 @@ public class CategoryController extends BaseController {
                     HttpStatus.NO_CONTENT);
         }
     }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<BaseResponse> deleteOne(HttpServletRequest request,
-//                                                  @PathVariable Long id){
-////        writeLog(post); //write log to log-service
-//        Long user_id = Long.parseLong(request.getHeader("id"));
-//        String role = request.getHeader("role");
-//
-//        if(!(role.equals("ADMIN") || role.equals("TRAINER"))){
-//            String msg = role + " is not authorized to access this resource!";
-//            return new ResponseEntity<BaseResponse>(new BaseResponse<>
-//                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
-//        }
-//        return postService.deleteOne(id);
-//    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse> deleteOne(HttpServletRequest request,
+                                                  @PathVariable Long id){
+        String role = request.getHeader("role");
+
+        if(!(role.equals("ADMIN"))){
+            String msg = role + " is not authorized to access this resource!";
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                    (Boolean.FALSE, msg), HttpStatus.FORBIDDEN);
+        }
+        try{
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(
+                    Boolean.TRUE, categoryService.deleteOne(id)), HttpStatus.OK);
+
+        }catch (DataNotFoundException e){
+            System.out.println(e.getMessage());
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, e.getMessage()),
+                    HttpStatus.NO_CONTENT);
+        }
+
+    }
 //
 //    @GetMapping
 //    public ResponseEntity<BaseResponse> getAll(){

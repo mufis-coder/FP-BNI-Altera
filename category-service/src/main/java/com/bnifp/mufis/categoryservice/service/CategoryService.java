@@ -12,7 +12,7 @@ public interface CategoryService {
 
     CategoryOutput updateOne(Long id, CategoryInput categoryInput) throws InputNullException, DataNotFoundException;
 
-//    ResponseEntity<BaseResponse> deleteOne(Long id);
-//
+    String deleteOne(Long id) throws DataNotFoundException;
+
 //    ResponseEntity<BaseResponse> getAll();
 }

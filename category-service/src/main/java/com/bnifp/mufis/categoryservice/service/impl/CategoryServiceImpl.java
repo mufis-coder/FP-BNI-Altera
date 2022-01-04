@@ -87,4 +87,16 @@ public class CategoryServiceImpl implements CategoryService {
         return this.mapper.map(category, CategoryOutput.class);
     }
 
+    @Override
+    public String deleteOne(Long id) throws DataNotFoundException{
+        Category category = findCategory(id);;
+        if(Objects.isNull(category)){
+            String message = "Category with id: " + id.toString() + " is not Found";
+            throw new DataNotFoundException(message);
+        }
+        categoryRepository.deleteById(id);
+        String message = "Successfully Deleted post with id: " + id;
+        return message;
+    }
+
 }
