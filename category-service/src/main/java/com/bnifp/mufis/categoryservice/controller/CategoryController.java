@@ -5,17 +5,13 @@ import com.bnifp.mufis.categoryservice.dto.output.CategoryOutput;
 import com.bnifp.mufis.categoryservice.dto.response.BaseResponse;
 import com.bnifp.mufis.categoryservice.exception.DataNotFoundException;
 import com.bnifp.mufis.categoryservice.exception.InputNullException;
-import com.bnifp.mufis.categoryservice.model.Category;
 import com.bnifp.mufis.categoryservice.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController

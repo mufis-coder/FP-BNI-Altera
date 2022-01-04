@@ -29,6 +29,8 @@ public class GatewayConfig {
                         filters(f -> f.filter(filter)).uri("lb://log-service"))
                 .route("category", r->r.path("/categories/**").
                         filters(f -> f.filter(filter)).uri("lb://category-service"))
+                .route("user-category", r->r.path("/user-categories/**").
+                        filters(f -> f.filter(filter)).uri("lb://category-service"))
                 .route("auth", r->r.path("/auths/**").uri("lb://auth-service"))
                 .route("post-swagger", r->r.path("/post-swagger/**").uri("lb://post-service"))
                 .route("auth-swagger", r->r.path("/auth-swagger/**").uri("lb://auth-service"))
