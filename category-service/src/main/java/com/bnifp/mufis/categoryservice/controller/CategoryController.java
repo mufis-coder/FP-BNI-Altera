@@ -3,6 +3,7 @@ package com.bnifp.mufis.categoryservice.controller;
 import com.bnifp.mufis.categoryservice.dto.input.CategoryInput;
 import com.bnifp.mufis.categoryservice.dto.output.CategoryOutput;
 import com.bnifp.mufis.categoryservice.dto.response.BaseResponse;
+import com.bnifp.mufis.categoryservice.exception.DataNotFoundException;
 import com.bnifp.mufis.categoryservice.exception.InputNullException;
 import com.bnifp.mufis.categoryservice.model.Category;
 import com.bnifp.mufis.categoryservice.service.CategoryService;
@@ -41,7 +42,6 @@ public class CategoryController extends BaseController {
 
         try{
             CategoryOutput categoryOutput = categoryService.addOne(input);
-            System.out.println(categoryOutput.toString());
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(categoryOutput),
                     HttpStatus.OK);
 
@@ -51,10 +51,19 @@ public class CategoryController extends BaseController {
         }
     }
 
-//    @GetMapping({"/{id}"})
-//    public  ResponseEntity<BaseResponse> getOne(@PathVariable Long id){
-//        return postService.getOne(id);
-//    }
+    @GetMapping({"/{id}"})
+    public  ResponseEntity<BaseResponse> getOne(@PathVariable Long id){
+        try{
+            CategoryOutput categoryOutput = categoryService.getOne(id);
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(categoryOutput),
+                    HttpStatus.OK);
+
+        } catch (DataNotFoundException e){
+            System.out.println(e.getMessage());
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, e.getMessage()),
+                    HttpStatus.NO_CONTENT);
+        }
+    }
 //
 //    @PatchMapping({"/{id}"})
 //    public ResponseEntity<BaseResponse> updateOne(HttpServletRequest request, @PathVariable Long id,
