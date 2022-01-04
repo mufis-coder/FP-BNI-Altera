@@ -5,6 +5,8 @@ import com.bnifp.mufis.categoryservice.dto.output.CategoryOutput;
 import com.bnifp.mufis.categoryservice.exception.DataNotFoundException;
 import com.bnifp.mufis.categoryservice.exception.InputNullException;
 
+import java.util.List;
+
 public interface CategoryService {
     CategoryOutput addOne(CategoryInput categoryInput) throws InputNullException;
 
@@ -14,5 +16,5 @@ public interface CategoryService {
 
     String deleteOne(Long id) throws DataNotFoundException;
 
-//    ResponseEntity<BaseResponse> getAll();
+    List<CategoryOutput> getAll();
 }

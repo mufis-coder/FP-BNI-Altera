@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
@@ -113,17 +114,11 @@ public class CategoryController extends BaseController {
         }
 
     }
-//
-//    @GetMapping
-//    public ResponseEntity<BaseResponse> getAll(){
-//        return postService.getAll();
-//    }
-//
-//    @GetMapping("/details/{id}")
-//    public ResponseEntity<BaseResponse> getOneDetail(HttpServletRequest request,
-//                                                     @PathVariable Long id){
-//
-//        return postService.getOneDetail(request.getHeader("Authorization"), id);
-//
-//    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse> getAll(){
+        List<CategoryOutput> categoryOutputList = categoryService.getAll();
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>(categoryOutputList), HttpStatus.OK);
+    }
+
 }

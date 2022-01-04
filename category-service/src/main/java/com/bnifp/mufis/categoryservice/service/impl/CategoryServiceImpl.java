@@ -7,10 +7,13 @@ import com.bnifp.mufis.categoryservice.exception.InputNullException;
 import com.bnifp.mufis.categoryservice.model.Category;
 import com.bnifp.mufis.categoryservice.repository.CategoryRepository;
 import com.bnifp.mufis.categoryservice.service.CategoryService;
+import org.apache.commons.collections4.IterableUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -99,4 +102,15 @@ public class CategoryServiceImpl implements CategoryService {
         return message;
     }
 
+    @Override
+    public List<CategoryOutput> getAll(){
+        Iterable<Category> category = categoryRepository.findAll();
+        List<Category> categoryList = IterableUtils.toList(category);
+
+        List<CategoryOutput> outputs = new ArrayList<>();
+        for(Category categor: categoryList){
+            outputs.add(mapper.map(categor, CategoryOutput.class));
+        }
+        return outputs;
+    }
 }
