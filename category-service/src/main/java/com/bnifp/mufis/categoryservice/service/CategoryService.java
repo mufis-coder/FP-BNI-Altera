@@ -10,10 +10,8 @@ public interface CategoryService {
 
     CategoryOutput getOne(Long id) throws DataNotFoundException;
 
-//    ResponseEntity<BaseResponse> getOneDetail(String token, Long id);
-//
-//    ResponseEntity<BaseResponse> updateOne(Long id, PostInput input);
-//
+    CategoryOutput updateOne(Long id, CategoryInput categoryInput) throws InputNullException, DataNotFoundException;
+
 //    ResponseEntity<BaseResponse> deleteOne(Long id);
 //
 //    ResponseEntity<BaseResponse> getAll();

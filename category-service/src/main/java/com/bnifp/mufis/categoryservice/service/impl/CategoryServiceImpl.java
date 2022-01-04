@@ -69,4 +69,22 @@ public class CategoryServiceImpl implements CategoryService {
         return this.mapper.map(category, CategoryOutput.class);
     }
 
+    @Override
+    public CategoryOutput updateOne(Long id, CategoryInput categoryInput) throws
+            InputNullException, DataNotFoundException {
+        if(isNullorEmpty(categoryInput.getName())){
+            throw new InputNullException("Name cannot be null or empty!");
+        }
+
+        Category category = findCategory(id);;
+        if(Objects.isNull(category)){
+            String message = "Category with id: " + id.toString() + " is not Found";
+            throw new DataNotFoundException(message);
+        }
+
+        this.mapper.map(categoryInput, category);
+        categoryRepository.save(category);
+        return this.mapper.map(category, CategoryOutput.class);
+    }
+
 }
