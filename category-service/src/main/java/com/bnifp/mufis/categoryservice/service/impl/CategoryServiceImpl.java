@@ -98,7 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new DataNotFoundException(message);
         }
         categoryRepository.deleteById(id);
-        String message = "Successfully Deleted post with id: " + id;
+        String message = "Successfully deleted category with id: " + id;
         return message;
     }
 
