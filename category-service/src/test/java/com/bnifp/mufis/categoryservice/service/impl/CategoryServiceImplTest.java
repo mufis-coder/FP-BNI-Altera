@@ -14,9 +14,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -55,6 +57,8 @@ public class CategoryServiceImplTest {
         verify(categoryRepository, times(1)).save(category);
         verify(mockModelMapper, times(1)).map(input, Category.class);
         verify(mockModelMapper, times(1)).map(category, CategoryOutput.class);
+        CategoryOutput output = modelMapper.map(category, CategoryOutput.class);
+        assertEquals(output, result);
     }
 
     @Test
@@ -91,5 +95,59 @@ public class CategoryServiceImplTest {
         assertEquals(output, result);
     }
 
+    @Test
+    public void updateOne_WillExeption() {
+        // Given
+        CategoryInput input = easyRandom.nextObject(CategoryInput.class);
+        String errMsg = "Category with id: " + id.toString() + " is not Found";
+        when(categoryRepository.findById(id)).thenAnswer( invocation -> { throw new DataNotFoundException(errMsg); });
 
+        // When
+        Exception thrown = assertThrows(
+                Exception.class,
+                () -> categoryService.updateOne(id, input),
+                "Expected updateOne() to throw, but it didn't"
+        );
+
+        // Then
+        assertTrue(thrown.getMessage().equals(errMsg));
+        verify(categoryRepository, times(1)).findById(id);
+    }
+
+    @Test
+    public void deleteOne_WillThrowException() {
+        // Given
+        CategoryInput input = easyRandom.nextObject(CategoryInput.class);
+        String errMsg = "Category with id: " + id.toString() + " is not Found";
+        when(categoryRepository.findById(id)).thenAnswer( invocation -> { throw new DataNotFoundException(errMsg); });
+
+        // When
+        Exception thrown = assertThrows(
+                Exception.class,
+                () -> categoryService.deleteOne(id),
+                "Expected deleteOne() to throw, but it didn't"
+        );
+
+        // Then
+        verify(categoryRepository, times(1)).findById(id);
+        assertTrue(thrown.getMessage().equals(errMsg));
+    }
+
+    @Test
+    public void getAll_WillReturnListCategoryOutput() {
+        Iterable<Category> categoryIterable = easyRandom.objects(Category.class, 2)
+                .collect(Collectors.toList());
+        when(categoryRepository.findAll()).thenReturn(categoryIterable);
+
+        // When
+        var result = categoryService.getAll();
+
+        // Then
+        List<CategoryOutput> outputs = new ArrayList<>();
+        for (Category category: categoryIterable) {
+            outputs.add(modelMapper.map(category, CategoryOutput.class));
+        }
+        verify(categoryRepository, times(1)).findAll();
+        assertEquals(outputs, result);
+    }
 }
