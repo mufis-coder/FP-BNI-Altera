@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface UserCategoryRepository extends CrudRepository<UserCategory, Long> {
-    List<UserCategory> findByUserId(Long UserId);
+    List<UserCategory> findByUserId(Long userId);
 
     UserCategory findByUserIdAndCategoryId(Long userId, Long categoryId);
 }
