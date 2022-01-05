@@ -27,10 +27,17 @@ public class GatewayConfig {
                         .filters(f -> f.filter(filter)).uri("lb://auth-service"))
                 .route("log", r->r.path("/logs/**").
                         filters(f -> f.filter(filter)).uri("lb://log-service"))
+                .route("category", r->r.path("/categories/**").
+                        filters(f -> f.filter(filter)).uri("lb://category-service"))
+                .route("user-category", r->r.path("/user-categories/**").
+                        filters(f -> f.filter(filter)).uri("lb://category-service"))
+                .route("post-category", r->r.path("/post-categories/**").
+                        filters(f -> f.filter(filter)).uri("lb://category-service"))
                 .route("auth", r->r.path("/auths/**").uri("lb://auth-service"))
                 .route("post-swagger", r->r.path("/post-swagger/**").uri("lb://post-service"))
                 .route("auth-swagger", r->r.path("/auth-swagger/**").uri("lb://auth-service"))
                 .route("log-swagger", r->r.path("/log-swagger/**").uri("lb://log-service"))
+                .route("category-swagger", r->r.path("/category-swagger/**").uri("lb://category-service"))
                 .build();
     }
 

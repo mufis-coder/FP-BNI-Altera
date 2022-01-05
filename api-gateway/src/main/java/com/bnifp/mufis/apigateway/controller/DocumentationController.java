@@ -20,6 +20,7 @@ public class DocumentationController implements SwaggerResourcesProvider {
         resources.add(swaggerResource("auth-service", "/auth-swagger/v3/api-docs", "3.0"));
         resources.add(swaggerResource("log-service", "/log-swagger/v3/api-docs", "2.0"));
         resources.add(swaggerResource("post-service", "/post-swagger/v3/api-docs", "2.0"));
+        resources.add(swaggerResource("category-service", "/category-swagger/v3/api-docs", "2.0"));
         return resources;
     }
 
