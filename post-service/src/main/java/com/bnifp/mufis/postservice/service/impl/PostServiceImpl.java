@@ -13,6 +13,7 @@ import com.bnifp.mufis.postservice.repository.PostRepository;
 import com.bnifp.mufis.postservice.service.KafkaProducer;
 import com.bnifp.mufis.postservice.service.PostService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections4.IterableUtils;
@@ -208,6 +209,72 @@ public class PostServiceImpl implements PostService {
             outputs.add(mapper.map(post, PostOutput.class));
         }
         return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> getAllFitCategories(String token){
+        try {
+            String url = "http://localhost:9000/users/me/detail";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", token);
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            HttpEntity<LogInput> entity = new HttpEntity<>(null, headers);
+
+            String response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class).getBody();
+
+            JSONObject UserCategoriesJson = new JSONObject(response);
+            UserOutputCategories userCategories = new ObjectMapper().readValue(
+                    UserCategoriesJson.get("data").toString(),
+                    UserOutputCategories.class);
+
+            List<Long> categoriesId = new ArrayList<>();
+            for(CategoryOutput category: userCategories.getCategories()){
+                categoriesId.add(category.getId());
+            }
+
+            String url2 = "http://localhost:9000/post-categories";
+
+            HttpHeaders headers2 = new HttpHeaders();
+            headers2.add("Authorization", token);
+            headers2.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            HttpEntity<LogInput> entity2 = new HttpEntity<>(null, headers2);
+
+            String response2 = restTemplate.exchange(url2, HttpMethod.GET, entity2, String.class).getBody();
+
+            JSONObject postCategoriesJson = new JSONObject(response2);
+            List<PostCategory> userCategoryOutputList = new ObjectMapper().readValue(
+                    postCategoriesJson.get("data").toString(), new TypeReference<List<PostCategory>>(){});
+
+
+            Iterable<Post> posts = postRepository.findAll();
+            List<Post> postList = IterableUtils.toList(posts);
+
+            List<PostOutput> outputs = new ArrayList<>();
+            for(Post post: postList){
+
+                for(PostCategory postCategory: userCategoryOutputList){
+                    if(post.getId() == postCategory.getPostId()){
+                        if(categoriesId.contains(postCategory.getCategoryId())){
+                            outputs.add(mapper.map(post, PostOutput.class));
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+            return new ResponseEntity<BaseResponse>(new BaseResponse<>(outputs), HttpStatus.OK);
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>
+                (Boolean.FALSE, "Operation failed"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

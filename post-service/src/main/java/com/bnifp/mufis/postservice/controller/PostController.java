@@ -105,6 +105,12 @@ public class PostController extends BaseController {
         return postService.getAll();
     }
 
+    @GetMapping("/fit-categories")
+    public ResponseEntity<BaseResponse> getAllFitCategories(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        return postService.getAllFitCategories(token);
+    }
+
     @GetMapping("/details/{id}")
     public ResponseEntity<BaseResponse> getOneDetail(HttpServletRequest request,
                                                      @PathVariable Long id){

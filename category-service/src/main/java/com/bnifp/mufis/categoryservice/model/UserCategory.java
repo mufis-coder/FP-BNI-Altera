@@ -22,4 +22,5 @@ public class UserCategory {
 
     @Column(name = "category_id")
     private Long categoryId;
+
 }

@@ -1,6 +1,8 @@
 package com.bnifp.mufis.categoryservice.controller;
 
 import com.bnifp.mufis.categoryservice.dto.input.UserCategoryInput;
+import com.bnifp.mufis.categoryservice.dto.output.CategoryOutput;
+import com.bnifp.mufis.categoryservice.dto.output.UserCategoryOutput;
 import com.bnifp.mufis.categoryservice.dto.response.BaseResponse;
 import com.bnifp.mufis.categoryservice.exception.DataNotFoundException;
 import com.bnifp.mufis.categoryservice.exception.InputNullException;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user-categories")
@@ -55,5 +58,12 @@ public class UserCategoryController {
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, e.getMessage()),
                     HttpStatus.NO_CONTENT);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse> getAllByUserId(HttpServletRequest request){
+        Long userId = Long.parseLong(request.getHeader("id"));
+        List<UserCategoryOutput> OutputList = userCategoryService.getAllByUserId(userId);
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>(OutputList), HttpStatus.OK);
     }
 }

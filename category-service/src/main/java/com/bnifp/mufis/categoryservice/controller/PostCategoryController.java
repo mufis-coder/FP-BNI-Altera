@@ -1,9 +1,11 @@
 package com.bnifp.mufis.categoryservice.controller;
 
 import com.bnifp.mufis.categoryservice.dto.input.PostCategoryInput;
+import com.bnifp.mufis.categoryservice.dto.output.CategoryOutput;
 import com.bnifp.mufis.categoryservice.dto.response.BaseResponse;
 import com.bnifp.mufis.categoryservice.exception.DataNotFoundException;
 import com.bnifp.mufis.categoryservice.exception.InputNullException;
+import com.bnifp.mufis.categoryservice.model.PostCategory;
 import com.bnifp.mufis.categoryservice.service.PostCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/post-categories")
@@ -52,5 +55,11 @@ public class PostCategoryController {
             return new ResponseEntity<BaseResponse>(new BaseResponse<>(Boolean.FALSE, e.getMessage()),
                     HttpStatus.NO_CONTENT);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse> getAll(){
+        List<PostCategory> postCategoryList = postCategoryService.getAll();
+        return new ResponseEntity<BaseResponse>(new BaseResponse<>(postCategoryList), HttpStatus.OK);
     }
 }

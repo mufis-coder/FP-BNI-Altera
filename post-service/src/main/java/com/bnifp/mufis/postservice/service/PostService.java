@@ -21,4 +21,6 @@ public interface PostService {
     ResponseEntity<BaseResponse> deleteOne(Long id);
 
     ResponseEntity<BaseResponse> getAll();
+
+    ResponseEntity<BaseResponse> getAllFitCategories(String token);
 }

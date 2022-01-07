@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 
@@ -26,6 +27,13 @@ public class UserController {
     public ResponseEntity<BaseResponse> getOne(Principal principal) {
         String username = principal.getName();
         return userService.getOne(username);
+    }
+
+    @GetMapping("/me/detail")
+    public ResponseEntity<BaseResponse> getOneDetail(Principal principal, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        String username = principal.getName();
+        return userService.getOneDetail(username, token);
     }
 
     @GetMapping({"/{id}"})
